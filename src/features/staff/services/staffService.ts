@@ -3,7 +3,11 @@ import type { SaveStaffMemberInput, StaffMember } from "../domain/types";
 import { validateStaffMemberInput } from "../domain/validation";
 
 export class StaffService {
-  constructor(private readonly repository: StaffRepository) {}
+  private readonly repository: StaffRepository;
+
+  constructor(repository: StaffRepository) {
+    this.repository = repository;
+  }
 
   list(): Promise<StaffMember[]> { return this.repository.list(); }
   findById(id: string): Promise<StaffMember | null> { return this.repository.findById(id); }

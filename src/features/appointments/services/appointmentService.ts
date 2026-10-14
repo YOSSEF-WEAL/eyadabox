@@ -7,10 +7,16 @@ interface PatientAppointmentEligibility {
 }
 
 export class AppointmentService {
+  private readonly repository: AppointmentRepository;
+  private readonly patientLookup: PatientAppointmentEligibility;
+
   constructor(
-    private readonly repository: AppointmentRepository,
-    private readonly patientLookup: PatientAppointmentEligibility,
-  ) {}
+    repository: AppointmentRepository,
+    patientLookup: PatientAppointmentEligibility,
+  ) {
+    this.repository = repository;
+    this.patientLookup = patientLookup;
+  }
   list(): Promise<Appointment[]> { return this.repository.list(); }
   listByPatient(patientId: string): Promise<Appointment[]> { return this.repository.listByPatient(patientId); }
   async create(input: SaveAppointmentInput): Promise<Appointment> {

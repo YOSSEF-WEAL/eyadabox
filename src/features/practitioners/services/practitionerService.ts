@@ -10,7 +10,11 @@ function validate(input: SavePractitionerInput): SavePractitionerInput {
 }
 
 export class PractitionerService {
-  constructor(private readonly repository: PractitionerRepository) {}
+  private readonly repository: PractitionerRepository;
+
+  constructor(repository: PractitionerRepository) {
+    this.repository = repository;
+  }
   list(): Promise<Practitioner[]> { return this.repository.list(); }
   findById(id: string): Promise<Practitioner | null> { return this.repository.findById(id); }
   create(input: SavePractitionerInput): Promise<Practitioner> { return this.repository.create(validate(input)); }

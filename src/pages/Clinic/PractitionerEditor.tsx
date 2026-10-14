@@ -2,7 +2,7 @@ import Label from "@/components/form/Label";
 import Input from "@/components/form/input/InputField";
 import PageBreadCrumb from "@/components/common/PageBreadCrumb";
 import PageMeta from "@/components/common/PageMeta";
-import { practitionerService, type Practitioner, type SavePractitionerInput, type WorkingDay } from "@/features/practitioners";
+import { practitionerService, type SavePractitionerInput, type WorkingDay } from "@/features/practitioners";
 import { useCallback, useEffect, useState, type FormEvent } from "react";
 import { useTranslation } from "react-i18next";
 import { useNavigate, useParams } from "react-router";

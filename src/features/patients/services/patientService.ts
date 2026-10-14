@@ -3,7 +3,11 @@ import type { CreatePatientInput, Patient, UpdatePatientInput } from "../domain/
 import { validatePatientInput } from "../domain/validation";
 
 export class PatientService {
-  constructor(private readonly repository: PatientRepository) {}
+  private readonly repository: PatientRepository;
+
+  constructor(repository: PatientRepository) {
+    this.repository = repository;
+  }
 
   create(input: CreatePatientInput): Promise<Patient> { return this.repository.create(validatePatientInput(input)); }
   findById(id: string): Promise<Patient | null> { return this.repository.findById(id); }

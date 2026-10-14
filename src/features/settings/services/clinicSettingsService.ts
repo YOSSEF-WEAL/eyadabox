@@ -8,7 +8,11 @@ function validate(input: SaveClinicSettingsInput): SaveClinicSettingsInput {
 }
 
 export class ClinicSettingsService {
-  constructor(private readonly repository: ClinicSettingsRepository) {}
+  private readonly repository: ClinicSettingsRepository;
+
+  constructor(repository: ClinicSettingsRepository) {
+    this.repository = repository;
+  }
   get(): Promise<ClinicSettings> { return this.repository.get(); }
   save(input: SaveClinicSettingsInput): Promise<ClinicSettings> { return this.repository.save(validate(input)); }
 }
