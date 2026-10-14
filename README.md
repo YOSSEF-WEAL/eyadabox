@@ -10,9 +10,9 @@ Arabic and English interfaces are supported. The product uses the Arabic EyadaBo
 
 ## Download for clinics
 
-**Windows x64 installer:** [Download EyadaBox Clinic Desk](https://github.com/YOSSEF-WEAL/eyadabox/releases/latest/download/EyadaBox-Setup-x64.exe)
+**Available releases:** [View EyadaBox Clinic Desk releases](https://github.com/YOSSEF-WEAL/eyadabox/releases)
 
-The direct link is reserved for the signed installer attached to the latest GitHub Release. It will become active when the first production release is published; it does not point to the development executable.
+There is no production installer published yet. The direct `.exe` download link is added only after the actual signed installer has been built and attached to a GitHub Release; this prevents a broken or misleading download link. It never points to the development executable.
 
 ### Client requirements
 
@@ -116,7 +116,7 @@ docs/
 
 ## Release policy
 
-The debug executable is for local development only and must not be shared with clinics. A user-facing Windows installer is produced only from an explicitly requested, reviewed Tauri release build. When publishing the release, upload the generated x64 NSIS installer under the stable asset name `EyadaBox-Setup-x64.exe` so the direct download link above remains valid. See the [release guide](docs/tasks/07-windows-release-and-installation.md) for the distribution path and validation checklist.
+The debug executable is for local development only and must not be shared with clinics. A user-facing Windows installer is produced only from an explicitly requested, reviewed Tauri release build. After publishing that installer to GitHub Releases, add its exact GitHub asset URL here. See the [release guide](docs/tasks/07-windows-release-and-installation.md) for the distribution path and validation checklist.
 
 ## License and template attribution
 

@@ -51,18 +51,19 @@ Clinic Desk_0.1.0_x64-setup.exe
 
 Treat the file that actually appears in this folder as the authoritative installer filename, because Tauri may vary it by version, architecture, or bundle configuration.
 
-## GitHub direct-download asset
+## GitHub download link
 
-For each approved production release, upload the generated x64 NSIS installer to the repository's GitHub Release using the stable asset name:
+For each approved production release:
+
+1. Build and validate the installer.
+2. Create the GitHub Release for that exact version.
+3. Upload the generated x64 NSIS installer as a release asset.
+4. Copy the asset's exact download URL from GitHub into the README after the upload completes.
+
+Do not add a direct `.exe` URL to the README before its asset exists. Until the first release is published, the README links only to the repository releases page:
 
 ```text
-EyadaBox-Setup-x64.exe
-```
-
-The README direct link is then stable across versions:
-
-```text
-https://github.com/YOSSEF-WEAL/eyadabox/releases/latest/download/EyadaBox-Setup-x64.exe
+https://github.com/YOSSEF-WEAL/eyadabox/releases
 ```
 
 ## Recommended release checklist
