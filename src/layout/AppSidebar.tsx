@@ -1,12 +1,12 @@
 import { useSidebar } from "@/context/SidebarContext";
-import { CalenderIcon, DashboardAltIcon, SettingsAltIcon, UserCircleIcon } from "@/icons";
+import { CalenderIcon, DashboardAltIcon, MultiUserIcon, SettingsAltIcon, UserCircleIcon } from "@/icons";
 import { cn } from "@/utils";
 import { useEffect } from "react";
 import { useTranslation } from "react-i18next";
 import { Link, useLocation } from "react-router";
 
 type NavigationItem = {
-  key: "clinicDashboard" | "appointments" | "patients" | "practitioners" | "clinicSettings";
+  key: "clinicDashboard" | "appointments" | "patients" | "practitioners" | "staff" | "clinicSettings";
   path: string;
   icon: React.ReactNode;
 };
@@ -16,6 +16,7 @@ const navigationItems: NavigationItem[] = [
   { key: "appointments", path: "/appointments", icon: <CalenderIcon fontSize={24} /> },
   { key: "patients", path: "/patients", icon: <UserCircleIcon fontSize={24} /> },
   { key: "practitioners", path: "/practitioners", icon: <UserCircleIcon fontSize={24} /> },
+  { key: "staff", path: "/staff", icon: <MultiUserIcon fontSize={24} /> },
   { key: "clinicSettings", path: "/settings", icon: <SettingsAltIcon fontSize={24} /> },
 ];
 

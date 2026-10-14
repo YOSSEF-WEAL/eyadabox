@@ -16,6 +16,7 @@
       "appointments": "الحجوزات",
       "patients": "المرضى",
       "practitioners": "الأطباء",
+      "staff": "الموظفون",
       "settings": "الإعدادات"
     },
     "dashboard": {
@@ -52,6 +53,11 @@
         "description": "إعداد بيانات العيادة والصلاحيات واللغة والنسخ الاحتياطي.",
         "emptyTitle": "ستظهر إعدادات العيادة هنا"
       },
+      "staff": {
+        "title": "موظفو العيادة",
+        "description": "إدارة موظفي العيادة المحليين وصلاحياتهم.",
+        "emptyTitle": "ستظهر قائمة موظفي العيادة هنا"
+      },
       "comingSoon": "يجري تجهيز هذه الوحدة ضمن مساحة عمل العيادة."
     },
     "actions": {
@@ -72,6 +78,21 @@
       "noResults": "لا يوجد مرضى يطابقون البحث.",
       "loadError": "تعذر تحميل المرضى. حاول مرة أخرى.",
       "saveError": "تعذر حفظ المريض. حاول مرة أخرى.",
+      "detailsLoadError": "تعذر تحميل ملف المريض. حاول مرة أخرى.",
+      "profileTitle": "ملف المريض",
+      "backToList": "العودة إلى المرضى",
+      "notFound": "لم يتم العثور على ملف المريض.",
+      "newAppointment": "موعد جديد",
+      "appointmentHistory": "سجل المواعيد",
+      "noAppointments": "لا توجد مواعيد مسجلة لهذا المريض.",
+      "noNotes": "لا توجد ملاحظات مسجلة.",
+      "createdAt": "تاريخ التسجيل",
+      "archive": "أرشفة المريض",
+      "archiving": "جارٍ الأرشفة...",
+      "archived": "مؤرشف",
+      "archivedAt": "تاريخ الأرشفة",
+      "archiveConfirm": "هل تريد أرشفة {{name}}؟ سيبقى الملف وسجل المواعيد متاحين، لكن لن يمكن إنشاء مواعيد جديدة.",
+      "archiveError": "تعذرت أرشفة المريض. حاول مرة أخرى.",
       "fields": { "fullName": "الاسم بالكامل", "phone": "الهاتف", "dateOfBirth": "تاريخ الميلاد", "sex": "النوع", "address": "العنوان", "notes": "ملاحظات" },
       "sexOptions": { "female": "أنثى", "male": "ذكر", "unspecified": "يفضل عدم الإجابة" },
       "columns": { "patient": "المريض", "phone": "الهاتف", "dateOfBirth": "تاريخ الميلاد", "address": "العنوان", "actions": "إجراءات" }
@@ -90,6 +111,7 @@
       "selectPractitioner": "اختر طبيبًا",
       "loadError": "تعذر تحميل الحجوزات. حاول مرة أخرى.",
       "saveError": "تعذر حفظ الحجز. حاول مرة أخرى.",
+      "archivedPatientError": "لا يمكن إنشاء موعد جديد لمريض مؤرشف.",
       "fields": { "patient": "المريض", "practitioner": "الطبيب", "startsAt": "وقت البداية", "endsAt": "وقت النهاية", "status": "الحالة", "reason": "سبب الزيارة" },
       "columns": { "patient": "المريض", "practitioner": "الطبيب", "time": "الوقت", "status": "الحالة", "actions": "إجراءات" },
       "statuses": { "scheduled": "مجدول", "confirmed": "مؤكد", "arrived": "حضر", "completed": "مكتمل", "no_show": "لم يحضر", "cancelled": "ملغي" }
@@ -122,13 +144,34 @@
       "saveError": "تعذر حفظ إعدادات العيادة. حاول مرة أخرى.",
       "saved": "تم حفظ إعدادات العيادة.",
       "fields": { "name": "اسم العيادة", "phone": "الهاتف", "address": "العنوان", "duration": "المدة الافتراضية للحجز (بالدقائق)" }
+    },
+    "staff": {
+      "title": "موظفو العيادة",
+      "description": "أدر الموظفين المحليين الذين يستخدمون مساحة عمل العيادة.",
+      "addStaff": "إضافة موظف",
+      "addTitle": "إضافة موظف",
+      "editTitle": "تعديل موظف",
+      "formDescription": "حدد اسم العرض المحلي واسم المستخدم والدور وحالة الحساب.",
+      "loadError": "تعذر تحميل الموظفين. حاول مرة أخرى.",
+      "saveError": "تعذر حفظ الموظف. حاول مرة أخرى.",
+      "errors": { "nameRequired": "أدخل اسم الموظف.", "usernameInvalid": "يجب أن يتكون اسم المستخدم من 3 إلى 50 حرفًا أو رقمًا، ويمكن أن يحتوي على نقطة أو شرطة أو شرطة سفلية.", "roleInvalid": "اختر دورًا صالحًا للموظف.", "usernameTaken": "اسم المستخدم مستخدم بالفعل.", "notFound": "لم يتم العثور على الموظف.", "lastActiveAdmin": "يجب أن يبقى مدير نشط واحد على الأقل." },
+      "fields": { "displayName": "اسم العرض", "username": "اسم المستخدم", "role": "الدور", "active": "الحساب نشط" },
+      "columns": { "displayName": "الموظف", "username": "اسم المستخدم", "role": "الدور", "status": "الحالة", "actions": "إجراءات" },
+      "roles": { "admin": "مدير", "receptionist": "استقبال", "practitioner": "طبيب" },
+      "status": { "active": "نشط", "inactive": "غير نشط" },
+      "credentialsNotice": "سجلات الموظفين تعريفية فقط. سيتم إنشاء بيانات الدخول عبر إجراء مدير مخصص لاحقًا."
+    },
+    "auth": {
+      "title": "دخول محلي آمن", "description": "سجّل الدخول إلى جهاز العيادة.", "nativeDescription": "تسجيل الدخول الآمن متاح فقط من تطبيق Clinic Desk المكتبي المثبّت.",
+      "setupTitle": "إعداد العيادة", "setupDescription": "أنشئ حساب المدير الأول لهذا الجهاز.", "signInTitle": "تسجيل الدخول", "signIn": "دخول", "createAdmin": "إنشاء المدير", "displayName": "اسم العرض", "username": "اسم المستخدم", "password": "كلمة المرور", "confirmPassword": "تأكيد كلمة المرور",
+      "errors": { "invalidCredentials": "اسم المستخدم أو كلمة المرور غير صحيحين.", "accountLocked": "هذا الحساب مقفل مؤقتًا. حاول بعد 15 دقيقة.", "displayNameRequired": "أدخل اسم العرض.", "usernameInvalid": "استخدم من 3 إلى 50 حرفًا أو رقمًا أو نقطة أو شرطة.", "passwordWeak": "يجب أن تحتوي كلمة المرور على 10 أحرف على الأقل.", "passwordMismatch": "كلمتا المرور غير متطابقتين.", "usernameTaken": "اسم المستخدم مستخدم بالفعل.", "setupComplete": "تم إعداد الحساب الأول بالفعل.", "nativeRequired": "افتح تطبيق سطح المكتب المثبّت لتسجيل الدخول.", "unavailable": "تعذر الوصول إلى تسجيل الدخول الآمن. حاول مرة أخرى." }
     }
   },
   "sidebar": {
     "groups": { "menu": "القائمة", "support": "الدعم", "others": "أخرى" },
     "badges": { "new": "جديد", "pro": "احترافي" },
     "items": {
-      "dashboard": "لوحة التحكم", "clinicDashboard": "نظرة عامة", "appointments": "الحجوزات", "patients": "المرضى", "practitioners": "الأطباء", "clinicSettings": "الإعدادات", "ecommerceHome": "التجارة الإلكترونية", "calendar": "التقويم", "userProfile": "الملف الشخصي", "forms": "النماذج", "formElements": "عناصر النماذج", "tables": "الجداول", "basicTables": "الجداول الأساسية", "pages": "الصفحات", "blankPage": "صفحة فارغة", "charts": "المخططات", "lineChart": "مخطط خطي", "barChart": "مخطط أعمدة", "uiElements": "عناصر الواجهة", "alerts": "التنبيهات", "avatar": "الصورة الشخصية", "badge": "الشارات", "buttons": "الأزرار", "images": "الصور", "videos": "الفيديوهات", "authentication": "تسجيل الدخول", "signIn": "تسجيل الدخول", "signUp": "إنشاء حساب"
+      "dashboard": "لوحة التحكم", "clinicDashboard": "نظرة عامة", "appointments": "الحجوزات", "patients": "المرضى", "practitioners": "الأطباء", "clinicSettings": "الإعدادات", "staff": "الموظفون", "ecommerceHome": "التجارة الإلكترونية", "calendar": "التقويم", "userProfile": "الملف الشخصي", "forms": "النماذج", "formElements": "عناصر النماذج", "tables": "الجداول", "basicTables": "الجداول الأساسية", "pages": "الصفحات", "blankPage": "صفحة فارغة", "charts": "المخططات", "lineChart": "مخطط خطي", "barChart": "مخطط أعمدة", "uiElements": "عناصر الواجهة", "alerts": "التنبيهات", "avatar": "الصورة الشخصية", "badge": "الشارات", "buttons": "الأزرار", "images": "الصور", "videos": "الفيديوهات", "authentication": "تسجيل الدخول", "signIn": "تسجيل الدخول", "signUp": "إنشاء حساب"
     },
     "widget": { "title": "لوحة تحكم Tailwind CSS", "description": "قالب جاهز يحتوي على مكونات وصفحات للوحة التحكم.", "purchasePlan": "عرض الخطة" }
   },

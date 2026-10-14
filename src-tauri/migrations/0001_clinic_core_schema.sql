@@ -24,7 +24,7 @@ CREATE TABLE IF NOT EXISTS practitioners (
 CREATE TABLE IF NOT EXISTS staff_users (
   id TEXT PRIMARY KEY NOT NULL,
   username TEXT NOT NULL COLLATE NOCASE UNIQUE,
-  password_hash TEXT NOT NULL,
+  password_hash TEXT NOT NULL DEFAULT '',
   display_name TEXT NOT NULL,
   role TEXT NOT NULL CHECK (role IN ('admin', 'doctor', 'receptionist')),
   practitioner_id TEXT REFERENCES practitioners(id) ON DELETE SET NULL,

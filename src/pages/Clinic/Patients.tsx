@@ -7,9 +7,11 @@ import { useModal } from "@/hooks/useModal";
 import { PlusIcon, SearchIcon } from "@/icons";
 import { useCallback, useEffect, useState } from "react";
 import { useTranslation } from "react-i18next";
+import { useNavigate } from "react-router";
 
 export default function Patients() {
   const { t } = useTranslation();
+  const navigate = useNavigate();
   const { isOpen, openModal, closeModal } = useModal();
   const [patients, setPatients] = useState<Patient[]>([]);
   const [query, setQuery] = useState("");
@@ -50,6 +52,8 @@ export default function Patients() {
     }
   };
 
+  const handleView = (patient: Patient) => navigate(`/patients/${patient.id}`);
+
   return (
     <>
       <PageMeta title={`${t("clinic.modules.patients.title")} | Clinic Desk`} description={t("clinic.modules.patients.description")} />
@@ -62,7 +66,7 @@ export default function Patients() {
         <div className="p-5">
           <div className="relative max-w-md"><SearchIcon className="pointer-events-none absolute inset-s-4 top-1/2 size-5 -translate-y-1/2 text-gray-400" /><input value={query} onChange={(event) => setQuery(event.target.value)} placeholder={t("clinic.patients.searchPlaceholder")} className="h-11 w-full rounded-lg border border-gray-300 bg-transparent py-2.5 ps-12 pe-4 text-sm text-gray-800 shadow-theme-xs placeholder:text-gray-400 focus:border-brand-300 focus:ring-3 focus:ring-brand-500/20 focus:outline-hidden dark:border-gray-700 dark:bg-gray-900 dark:text-white/90 dark:focus:border-brand-800" /></div>
         </div>
-        {isLoading ? <div className="py-14 text-center text-theme-sm text-gray-500 dark:text-gray-400">{t("clinic.actions.loading")}</div> : <PatientTable patients={patients} onEdit={handleEdit} />}
+        {isLoading ? <div className="py-14 text-center text-theme-sm text-gray-500 dark:text-gray-400">{t("clinic.actions.loading")}</div> : <PatientTable patients={patients} onEdit={handleEdit} onView={handleView} />}
       </section>
       <PatientFormModal isOpen={isOpen} patient={selectedPatient} error={error} isSaving={isSaving} onClose={handleClose} onSave={handleSave} />
     </>

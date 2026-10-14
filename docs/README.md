@@ -28,6 +28,7 @@ The initial UI languages are English and Arabic. The selected interface language
 | [05](tasks/05-appointments.md) | Appointment scheduling | In progress — demo schedule, add, edit, and conflict validation are implemented |
 | [06](tasks/06-settings-and-backups.md) | Settings, backup, and restore | In progress — clinic details and default appointment duration implemented |
 | [07](tasks/07-quality-and-release.md) | Quality assurance and Windows release | Not started |
+| [08](tasks/08-local-auth-and-onboarding.md) | Local authentication and first-run onboarding | Implemented; runtime verification pending user-authorized command |
 
 Each task contains scope, implementation details, dependencies, and acceptance criteria. A task is not marked complete until its acceptance criteria have been verified without running a build unless the user explicitly asks for one.
 

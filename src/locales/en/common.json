@@ -16,6 +16,7 @@
       "appointments": "Appointments",
       "patients": "Patients",
       "practitioners": "Practitioners",
+      "staff": "Staff",
       "settings": "Settings"
     },
     "dashboard": {
@@ -52,6 +53,11 @@
         "description": "Configure clinic details, access, language, and backups.",
         "emptyTitle": "Clinic settings will appear here"
       },
+      "staff": {
+        "title": "Clinic staff",
+        "description": "Manage local staff access and roles.",
+        "emptyTitle": "Your clinic staff will appear here"
+      },
       "comingSoon": "This module is being prepared as part of the clinic workspace."
     },
     "actions": {
@@ -72,6 +78,21 @@
       "noResults": "No patients match your search.",
       "loadError": "Unable to load patients. Please try again.",
       "saveError": "Unable to save the patient. Please try again.",
+      "detailsLoadError": "Unable to load the patient profile. Please try again.",
+      "profileTitle": "Patient profile",
+      "backToList": "Back to patients",
+      "notFound": "Patient record was not found.",
+      "newAppointment": "New appointment",
+      "appointmentHistory": "Appointment history",
+      "noAppointments": "No appointments have been recorded for this patient.",
+      "noNotes": "No notes recorded.",
+      "createdAt": "Registered on",
+      "archive": "Archive patient",
+      "archiving": "Archiving...",
+      "archived": "Archived",
+      "archivedAt": "Archived on",
+      "archiveConfirm": "Archive {{name}}? This keeps the profile and appointment history, but prevents new appointments.",
+      "archiveError": "Unable to archive the patient. Please try again.",
       "fields": { "fullName": "Full name", "phone": "Phone", "dateOfBirth": "Date of birth", "sex": "Sex", "address": "Address", "notes": "Notes" },
       "sexOptions": { "female": "Female", "male": "Male", "unspecified": "Prefer not to say" },
       "columns": { "patient": "Patient", "phone": "Phone", "dateOfBirth": "Date of birth", "address": "Address", "actions": "Actions" }
@@ -90,6 +111,7 @@
       "selectPractitioner": "Select a practitioner",
       "loadError": "Unable to load appointments. Please try again.",
       "saveError": "Unable to save the appointment. Please try again.",
+      "archivedPatientError": "Archived patients cannot receive new appointments.",
       "fields": { "patient": "Patient", "practitioner": "Practitioner", "startsAt": "Start time", "endsAt": "End time", "status": "Status", "reason": "Visit reason" },
       "columns": { "patient": "Patient", "practitioner": "Practitioner", "time": "Time", "status": "Status", "actions": "Actions" },
       "statuses": { "scheduled": "Scheduled", "confirmed": "Confirmed", "arrived": "Arrived", "completed": "Completed", "no_show": "No-show", "cancelled": "Cancelled" }
@@ -122,6 +144,27 @@
       "saveError": "Unable to save clinic settings. Please try again.",
       "saved": "Clinic settings were saved.",
       "fields": { "name": "Clinic name", "phone": "Phone", "address": "Address", "duration": "Default appointment duration (minutes)" }
+    },
+    "staff": {
+      "title": "Clinic staff",
+      "description": "Manage the local staff members who use this clinic workspace.",
+      "addStaff": "Add staff member",
+      "addTitle": "Add staff member",
+      "editTitle": "Edit staff member",
+      "formDescription": "Set the local display name, username, role, and account status.",
+      "loadError": "Unable to load staff members. Please try again.",
+      "saveError": "Unable to save the staff member. Please try again.",
+      "errors": { "nameRequired": "Enter the staff member name.", "usernameInvalid": "Username must use 3–50 letters, numbers, dots, dashes, or underscores.", "roleInvalid": "Choose a valid staff role.", "usernameTaken": "That username is already in use.", "notFound": "Staff member was not found.", "lastActiveAdmin": "At least one active administrator is required." },
+      "fields": { "displayName": "Display name", "username": "Username", "role": "Role", "active": "Active account" },
+      "columns": { "displayName": "Staff member", "username": "Username", "role": "Role", "status": "Status", "actions": "Actions" },
+      "roles": { "admin": "Administrator", "receptionist": "Receptionist", "practitioner": "Practitioner" },
+      "status": { "active": "Active", "inactive": "Inactive" },
+      "credentialsNotice": "Staff records are metadata only. Login credentials are created through a future administrator workflow."
+    },
+    "auth": {
+      "title": "Secure local access", "description": "Sign in to this clinic device.", "nativeDescription": "Secure sign-in is available only in the installed Clinic Desk desktop app.",
+      "setupTitle": "Set up your clinic", "setupDescription": "Create the first administrator account for this device.", "signInTitle": "Sign in", "signIn": "Sign in", "createAdmin": "Create administrator", "displayName": "Display name", "username": "Username", "password": "Password", "confirmPassword": "Confirm password",
+      "errors": { "invalidCredentials": "Invalid username or password.", "accountLocked": "This account is temporarily locked. Try again in 15 minutes.", "displayNameRequired": "Enter a display name.", "usernameInvalid": "Use 3–50 letters, numbers, dots, dashes, or underscores.", "passwordWeak": "Password must contain at least 10 characters.", "passwordMismatch": "Passwords do not match.", "usernameTaken": "That username is already in use.", "setupComplete": "Initial setup has already been completed.", "nativeRequired": "Open the installed desktop app to sign in.", "unavailable": "Secure sign-in is unavailable. Please try again." }
     }
   },
   "sidebar": {
@@ -141,6 +184,7 @@
       "patients": "Patients",
       "practitioners": "Practitioners",
       "clinicSettings": "Settings",
+      "staff": "Staff",
       "ecommerceHome": "Ecommerce",
       "analytics": "Analytics",
       "marketing": "Marketing",

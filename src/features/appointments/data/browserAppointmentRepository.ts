@@ -23,6 +23,12 @@ function overlaps(appointment: Appointment, input: SaveAppointmentInput, exclude
 export class BrowserAppointmentRepository implements AppointmentRepository {
   async list(): Promise<Appointment[]> { return readAppointments().sort((first, second) => first.startsAt.localeCompare(second.startsAt)); }
 
+  async listByPatient(patientId: string): Promise<Appointment[]> {
+    return readAppointments()
+      .filter((appointment) => appointment.patientId === patientId)
+      .sort((first, second) => second.startsAt.localeCompare(first.startsAt));
+  }
+
   async create(input: SaveAppointmentInput): Promise<Appointment> {
     const appointments = readAppointments();
     if (appointments.some((appointment) => overlaps(appointment, input))) throw new Error("This practitioner already has an appointment in that time slot.");

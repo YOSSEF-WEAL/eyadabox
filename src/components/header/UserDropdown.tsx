@@ -4,7 +4,7 @@ import { getLanguage, languages, type Locale } from "@/i18n/languages";
 import { cn } from "@/utils";
 import { useEffect, useRef, useState } from "react";
 import { useTranslation } from "react-i18next";
-import { Link } from "react-router";
+import { useAuth } from "@/features/auth/AuthProvider";
 import { Dropdown } from "../ui/dropdown/Dropdown";
 import { DropdownItem } from "../ui/dropdown/DropdownItem";
 
@@ -16,6 +16,7 @@ export default function UserDropdown() {
   const { language: locale, setLanguage } = useLanguage();
   const currentLang = getLanguage(locale as Locale);
   const CurrentFlagIcon = currentLang.FlagIcon;
+  const { user, signOut } = useAuth();
 
   useClickOutside(subDropdownRef, () => {
     setIsSubDropdownOpen(false);
@@ -53,7 +54,7 @@ export default function UserDropdown() {
           <img src="/images/user/owner.png" alt="User" />
         </span>
 
-        <span className="me-1 block text-theme-sm font-medium">Musharof</span>
+        <span className="me-1 block text-theme-sm font-medium">{user?.displayName}</span>
         <svg
           className={`stroke-gray-500 transition-transform duration-200 dark:stroke-gray-400 ${
             isOpen ? "rotate-180" : ""
@@ -81,10 +82,10 @@ export default function UserDropdown() {
       >
         <div>
           <span className="block text-theme-sm font-medium text-gray-700 no-underline dark:text-gray-400">
-            Musharof Chowdhury
+            {user?.displayName}
           </span>
           <span className="mt-0.5 block text-theme-xs text-gray-500 no-underline dark:text-gray-400">
-            randomuser@pimjo.com
+            {user?.username}
           </span>
         </div>
 
@@ -251,8 +252,9 @@ export default function UserDropdown() {
             )}
           </li>
         </ul>
-        <Link
-          to="/signin"
+        <button
+          type="button"
+          onClick={() => { void signOut(); closeDropdown(); }}
           className="group mt-3 flex items-center gap-3 rounded-lg px-3 py-2 text-theme-sm font-medium text-gray-700 hover:bg-gray-100 hover:text-gray-700 dark:text-gray-400 dark:hover:bg-white/5 dark:hover:text-gray-300"
         >
           <svg
@@ -271,7 +273,7 @@ export default function UserDropdown() {
             />
           </svg>
           {t("userDropdown.signOut")}
-        </Link>
+        </button>
       </Dropdown>
     </div>
   );

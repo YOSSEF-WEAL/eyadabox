@@ -10,6 +10,7 @@ import { useModal } from "@/hooks/useModal";
 import { PencilIcon, PlusIcon } from "@/icons";
 import { useCallback, useEffect, useMemo, useState } from "react";
 import { useTranslation } from "react-i18next";
+import { useSearchParams } from "react-router";
 
 type DraftTimes = { startsAt: string; endsAt: string } | null;
 
@@ -25,6 +26,7 @@ function makeDraftTimes(defaultAppointmentMinutes: number, start?: Date, end?: D
 
 export default function Appointments() {
   const { t, i18n } = useTranslation();
+  const [searchParams] = useSearchParams();
   const { isOpen, openModal, closeModal } = useModal();
   const [appointments, setAppointments] = useState<Appointment[]>([]);
   const [patients, setPatients] = useState<Patient[]>([]);
@@ -82,7 +84,7 @@ export default function Appointments() {
       await load();
       closeModal();
     } catch (saveError) {
-      setError(saveError instanceof Error ? saveError.message : t("clinic.appointments.saveError"));
+      setError(saveError instanceof Error && saveError.message === "PATIENT_ARCHIVED" ? t("clinic.appointments.archivedPatientError") : saveError instanceof Error ? saveError.message : t("clinic.appointments.saveError"));
     } finally {
       setIsSaving(false);
     }
@@ -152,6 +154,6 @@ export default function Appointments() {
       </section>
     </>}
 
-    <AppointmentFormModal isOpen={isOpen} appointment={selected} initialStartsAt={draftTimes?.startsAt} initialEndsAt={draftTimes?.endsAt} patients={patients} practitioners={practitioners} error={error} isSaving={isSaving} onClose={closeModal} onSave={save} />
+    <AppointmentFormModal isOpen={isOpen} appointment={selected} initialPatientId={selected ? undefined : searchParams.get("patientId") ?? undefined} initialStartsAt={draftTimes?.startsAt} initialEndsAt={draftTimes?.endsAt} patients={patients} practitioners={practitioners} error={error} isSaving={isSaving} onClose={closeModal} onSave={save} />
   </>;
 }

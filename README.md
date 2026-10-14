@@ -1,3 +1,11 @@
+# Clinic Desk
+
+Offline-first clinic management software built on React, Tauri, Rust, and SQLite. On the first run of the installed desktop application, Clinic Desk guides the clinic through creating its first local administrator. Authentication is local to the device: passwords are verified in Rust and the active session remains only in application memory. The web development runtime intentionally cannot simulate sign-in.
+
+See [the local authentication and onboarding notes](docs/tasks/08-local-auth-and-onboarding.md) and [Windows release guidance](docs/tasks/07-windows-release-and-installation.md). Do not treat the debug executable as a user installer.
+
+---
+
 # TailAdmin React - Free React Tailwind Admin Dashboard Template
 
 TailAdmin is a free and open-source admin dashboard template built on **React and Tailwind CSS**, providing developers

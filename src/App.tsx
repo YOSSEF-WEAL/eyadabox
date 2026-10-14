@@ -1,18 +1,20 @@
 import { Route, BrowserRouter as Router, Routes } from "react-router";
 import { ScrollToTop } from "./components/common/ScrollToTop";
 import AppLayout from "./layout/AppLayout";
-import SignIn from "./pages/AuthPages/SignIn";
-import SignUp from "./pages/AuthPages/SignUp";
+import ClinicAuth from "./pages/AuthPages/ClinicAuth";
+import { RequireAdmin, RequireAuth } from "./features/auth/RequireAuth";
 import Calendar from "./pages/Calendar";
 import BarChart from "./pages/Charts/BarChart";
 import LineChart from "./pages/Charts/LineChart";
 import Dashboard from "./pages/Clinic/Dashboard";
 import Appointments from "./pages/Clinic/Appointments";
 import Patients from "./pages/Clinic/Patients";
+import PatientDetails from "./pages/Clinic/PatientDetails";
 import Practitioners from "./pages/Clinic/Practitioners";
 import PractitionerDetails from "./pages/Clinic/PractitionerDetails";
 import PractitionerEditor from "./pages/Clinic/PractitionerEditor";
 import Settings from "./pages/Clinic/Settings";
+import Staff from "./pages/Clinic/Staff";
 import FormElements from "./pages/Forms/FormElements";
 import Blank from "./pages/OtherPage/Blank";
 import NotFound from "./pages/OtherPage/NotFound";
@@ -32,10 +34,12 @@ export default function App() {
         <ScrollToTop />
         <Routes>
           {/* Dashboard Layout */}
+          <Route element={<RequireAuth />}>
           <Route element={<AppLayout />}>
             <Route index path="/" element={<Dashboard />} />
             <Route path="/appointments" element={<Appointments />} />
             <Route path="/patients" element={<Patients />} />
+            <Route path="/patients/:patientId" element={<PatientDetails />} />
             <Route path="/practitioners" element={<Practitioners />} />
             <Route path="/practitioners/new" element={<PractitionerEditor />} />
             <Route
@@ -46,7 +50,10 @@ export default function App() {
               path="/practitioners/:practitionerId/edit"
               element={<PractitionerEditor />}
             />
-            <Route path="/settings" element={<Settings />} />
+            <Route element={<RequireAdmin />}>
+              <Route path="/settings" element={<Settings />} />
+              <Route path="/staff" element={<Staff />} />
+            </Route>
 
             {/* Others Page */}
             <Route path="/profile" element={<UserProfiles />} />
@@ -71,10 +78,11 @@ export default function App() {
             <Route path="/line-chart" element={<LineChart />} />
             <Route path="/bar-chart" element={<BarChart />} />
           </Route>
+          </Route>
 
           {/* Auth Layout */}
-          <Route path="/signin" element={<SignIn />} />
-          <Route path="/signup" element={<SignUp />} />
+          <Route path="/signin" element={<ClinicAuth />} />
+          <Route path="/setup" element={<ClinicAuth setup />} />
 
           {/* Fallback Route */}
           <Route path="*" element={<NotFound />} />

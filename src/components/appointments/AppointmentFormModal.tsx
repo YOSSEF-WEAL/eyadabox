@@ -7,7 +7,7 @@ import type { Practitioner } from "@/features/practitioners";
 import { useState, type FormEvent } from "react";
 import { useTranslation } from "react-i18next";
 
-type Props = { isOpen: boolean; appointment: Appointment | null; initialStartsAt?: string; initialEndsAt?: string; patients: Patient[]; practitioners: Practitioner[]; error: string | null; isSaving: boolean; onClose: () => void; onSave: (input: SaveAppointmentInput) => Promise<void> };
+type Props = { isOpen: boolean; appointment: Appointment | null; initialPatientId?: string; initialStartsAt?: string; initialEndsAt?: string; patients: Patient[]; practitioners: Practitioner[]; error: string | null; isSaving: boolean; onClose: () => void; onSave: (input: SaveAppointmentInput) => Promise<void> };
 const statuses: AppointmentStatus[] = ["scheduled", "confirmed", "arrived", "completed", "no_show", "cancelled"];
 
 function toLocalDateTimeInput(value: string | undefined): string {
@@ -16,9 +16,9 @@ function toLocalDateTimeInput(value: string | undefined): string {
   return new Date(date.getTime() - date.getTimezoneOffset() * 60_000).toISOString().slice(0, 16);
 }
 
-function Form({ appointment, initialStartsAt, initialEndsAt, patients, practitioners, error, isSaving, onClose, onSave }: Omit<Props, "isOpen">) {
+function Form({ appointment, initialPatientId, initialStartsAt, initialEndsAt, patients, practitioners, error, isSaving, onClose, onSave }: Omit<Props, "isOpen">) {
   const { t } = useTranslation();
-  const [form, setForm] = useState<SaveAppointmentInput>({ patientId: appointment?.patientId ?? "", practitionerId: appointment?.practitionerId ?? "", startsAt: toLocalDateTimeInput(appointment?.startsAt ?? initialStartsAt), endsAt: toLocalDateTimeInput(appointment?.endsAt ?? initialEndsAt), status: appointment?.status ?? "scheduled", reason: appointment?.reason ?? "", notes: appointment?.notes ?? "" });
+  const [form, setForm] = useState<SaveAppointmentInput>({ patientId: appointment?.patientId ?? initialPatientId ?? "", practitionerId: appointment?.practitionerId ?? "", startsAt: toLocalDateTimeInput(appointment?.startsAt ?? initialStartsAt), endsAt: toLocalDateTimeInput(appointment?.endsAt ?? initialEndsAt), status: appointment?.status ?? "scheduled", reason: appointment?.reason ?? "", notes: appointment?.notes ?? "" });
   const setValue = <Key extends keyof SaveAppointmentInput>(key: Key, value: SaveAppointmentInput[Key]) => setForm((current) => ({ ...current, [key]: value }));
   const save = async (event: FormEvent<HTMLFormElement>) => { event.preventDefault(); await onSave({ ...form, startsAt: new Date(form.startsAt).toISOString(), endsAt: new Date(form.endsAt).toISOString() }); };
 
@@ -33,4 +33,4 @@ function Form({ appointment, initialStartsAt, initialEndsAt, patients, practitio
   </form>;
 }
 
-export default function AppointmentFormModal({ isOpen, appointment, initialStartsAt, initialEndsAt, patients, practitioners, error, isSaving, onClose, onSave }: Props) { const { t } = useTranslation(); return <Modal isOpen={isOpen} onClose={onClose} closeLabel={t("common.close")} className="max-w-2xl"><Form key={appointment?.id ?? initialStartsAt ?? "new"} appointment={appointment} initialStartsAt={initialStartsAt} initialEndsAt={initialEndsAt} patients={patients} practitioners={practitioners} error={error} isSaving={isSaving} onClose={onClose} onSave={onSave} /></Modal>; }
+export default function AppointmentFormModal({ isOpen, appointment, initialPatientId, initialStartsAt, initialEndsAt, patients, practitioners, error, isSaving, onClose, onSave }: Props) { const { t } = useTranslation(); return <Modal isOpen={isOpen} onClose={onClose} closeLabel={t("common.close")} className="max-w-2xl"><Form key={appointment?.id ?? `${initialPatientId ?? "new"}-${initialStartsAt ?? ""}`} appointment={appointment} initialPatientId={initialPatientId} initialStartsAt={initialStartsAt} initialEndsAt={initialEndsAt} patients={patients} practitioners={practitioners} error={error} isSaving={isSaving} onClose={onClose} onSave={onSave} /></Modal>; }

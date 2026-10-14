@@ -48,6 +48,19 @@ export class SqliteAppointmentRepository implements AppointmentRepository {
     }
   }
 
+  async listByPatient(patientId: string): Promise<Appointment[]> {
+    try {
+      const database = await getDatabase();
+      const rows = await database.select<AppointmentRow[]>(
+        `SELECT ${appointmentColumns} FROM appointments WHERE patient_id = $1 ORDER BY starts_at DESC`,
+        [patientId],
+      );
+      return rows.map(mapAppointment);
+    } catch (error) {
+      throw toDatabaseError(error, "Unable to load the patient appointment history.");
+    }
+  }
+
   async create(input: SaveAppointmentInput): Promise<Appointment> {
     const id = crypto.randomUUID();
     const now = new Date().toISOString();
