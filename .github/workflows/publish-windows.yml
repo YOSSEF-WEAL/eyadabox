@@ -1,0 +1,45 @@
+name: Publish Windows installer
+
+on:
+  push:
+    tags:
+      - "v*"
+
+permissions:
+  contents: write
+
+jobs:
+  publish:
+    name: Build and publish Windows installer
+    runs-on: windows-latest
+
+    steps:
+      - name: Check out source
+        uses: actions/checkout@v4
+
+      - name: Set up Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+
+      - name: Set up Rust
+        uses: dtolnay/rust-toolchain@stable
+
+      - name: Install frontend dependencies
+        run: npm ci
+
+      - name: Build installer and create GitHub Release
+        uses: tauri-apps/tauri-action@v0
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          tagName: ${{ github.ref_name }}
+          releaseName: Clinic Desk ${{ github.ref_name }}
+          releaseBody: |
+            Offline Windows x64 installer for Clinic Desk.
+
+            The installer includes the Microsoft Edge WebView2 runtime, so the clinic workstation does not need Node.js, npm, Rust, Visual Studio Build Tools, or a separate WebView2 download.
+          releaseDraft: false
+          prerelease: false
+          args: --bundles nsis
