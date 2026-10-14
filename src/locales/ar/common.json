@@ -11,6 +11,7 @@
   },
   "clinic": {
     "appName": "كلينك ديسك",
+    "brand": { "tagline": "إدارة العيادة ببساطة وعلى جهازك." },
     "navigation": {
       "dashboard": "لوحة التحكم",
       "appointments": "الحجوزات",

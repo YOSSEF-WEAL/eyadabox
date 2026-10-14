@@ -37,3 +37,5 @@ Role-based visibility is applied to administrative screens. The sidebar must not
 ## Implementation record
 
 - The clinic dashboard now reads appointments and patients from the service layer to show live daily counts and upcoming appointments.
+- Replaced the active TailAdmin logo references with the supplied EyadaBox brand assets. The shared `ClinicLogo` component selects the Arabic mark for Arabic UI and the English mark for the other supported interface languages; it is used in the sidebar, mobile header, and authentication shell.
+- Rewrote the repository README as Clinic Desk product documentation, including local-first behavior, onboarding, development boundaries, and release policy.

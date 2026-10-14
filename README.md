@@ -1,234 +1,103 @@
-# Clinic Desk
+# EyadaBox — Clinic Desk
 
-Offline-first clinic management software built on React, Tauri, Rust, and SQLite. On the first run of the installed desktop application, Clinic Desk guides the clinic through creating its first local administrator. Authentication is local to the device: passwords are verified in Rust and the active session remains only in application memory. The web development runtime intentionally cannot simulate sign-in.
+![EyadaBox](public/eyadabox-logo-en.png)
 
-See [the local authentication and onboarding notes](docs/tasks/08-local-auth-and-onboarding.md) and [Windows release guidance](docs/tasks/07-windows-release-and-installation.md). Do not treat the debug executable as a user installer.
+Clinic Desk is an offline-first desktop workspace for small clinics. It keeps the front-desk workflow focused on patients, appointments, practitioners, and local clinic operations—without requiring a cloud account or a remote database.
 
----
+Arabic and English interfaces are supported. The product uses the Arabic EyadaBox mark whenever the application language is Arabic and the English mark for all other supported interface languages.
 
-# TailAdmin React - Free React Tailwind Admin Dashboard Template
+> Status: active development. The application is not yet released for clinic use.
 
-TailAdmin is a free and open-source admin dashboard template built on **React and Tailwind CSS**, providing developers
-with everything they need to create a comprehensive, data-driven back-end,
-dashboard, or admin panel solution for upcoming web projects.
+## What is implemented
 
-With TailAdmin, you get access to all the necessary dashboard UI components, elements, and pages required to build a
-feature-rich and complete dashboard or admin panel. Whether you're building dashboard or admin panel for a complex web
-application or a simple website, TailAdmin is the perfect solution to help you get up and running quickly.
+- Local first-run onboarding for the initial clinic administrator.
+- Native local sign-in with memory-only sessions and role-aware access.
+- Patient registration, search, editing, profile history, and archive protection.
+- Appointment calendar and list views, practitioner filtering, editing, and conflict prevention.
+- Practitioner profiles and weekly working hours.
+- Clinic settings and local staff metadata management.
+- SQLite persistence in the operating-system application-data directory when running as the desktop app.
+- Bilingual Arabic/English UI with RTL support.
 
-![TailAdmin React.js Dashboard Preview](./banner.png)
+## Product principles
 
-## Overview
+- **Offline by default** — no cloud service, remote database, or telemetry is required.
+- **Simple for reception** — common actions stay close to the calendar and patient record.
+- **Safe local access** — passwords are processed in Rust with Argon2id; React never receives a password hash.
+- **Clear boundaries** — UI components call feature services, while database and native behavior remain behind typed feature APIs.
 
-TailAdmin provides essential UI components and layouts for building feature-rich, data-driven admin dashboards and
-control panels. It's built on:
+## Technology
 
-- React 19
-- TypeScript
-- Tailwind CSS v4
+| Layer | Technology |
+| --- | --- |
+| Interface | React 19, TypeScript, Vite, Tailwind CSS v4 |
+| Desktop runtime | Tauri 2 and Rust |
+| Local data | SQLite with migrations |
+| Localization | i18next with Arabic RTL and English |
+| Authentication | Native Tauri commands, Argon2id, in-memory session |
 
-### Quick Links
+## First-run experience
 
-- [✨ Visit Website](https://tailadmin.com)
-- [📄 Documentation](https://tailadmin.com/docs)
-- [⬇️ Download](https://tailadmin.com/download)
-- [🖌️ Figma Design File (Community Edition)](https://www.figma.com/community/file/1214477970819985778)
-- [⚡ Get PRO Version](https://tailadmin.com/pricing)
+1. Install and open the desktop application.
+2. Clinic Desk opens the setup screen on a fresh device.
+3. Create the first local administrator account.
+4. Sign in to reach the clinic workspace.
 
-### Demos
+Sessions are cleared when the desktop application closes. There is no public sign-up flow or cloud recovery flow in the current release scope.
 
-- [Free Version](https://free-react-demo.tailadmin.com/)
-- [Pro Version](https://react-demo.tailadmin.com)
-
-### Other Versions
-
-- [HTML Version](https://github.com/TailAdmin/tailadmin-free-tailwind-dashboard-template)
-- [Next.js Version](https://github.com/TailAdmin/free-nextjs-admin-dashboard)
-- [Vue.js Version](https://github.com/TailAdmin/vue-tailwind-admin-dashboard)
-- [Angular Version](https://github.com/TailAdmin/free-angular-tailwind-dashboard)
-- [Laravel Version](https://github.com/TailAdmin/tailadmin-laravel)
-
-## Installation
+## Development
 
 ### Prerequisites
 
-To get started with TailAdmin, ensure you have the following prerequisites installed and set up:
+- Node.js `20.19+` or `22.12+`
+- npm
+- Rust stable toolchain and the Windows C++ build prerequisites for Tauri development
 
-- Node.js 20.x or later
-
-### Cloning the Repository
-
-Clone the repository using the following command:
+### Run the browser interface
 
 ```bash
-git clone https://github.com/TailAdmin/free-react-tailwind-admin-dashboard.git
+npm install
+npm run dev
 ```
 
-> Windows Users: place the repository near the root of your drive if you face issues while cloning.
+The browser runtime is useful for UI development. Secure local authentication intentionally requires the installed Tauri desktop runtime, so browser mode displays a native-runtime notice instead of simulating a sign-in.
 
-1. Install dependencies:
+### Run the desktop development app
 
-    ```bash
-    npm install
-    # or
-    yarn install
-    ```
+```bash
+npm run tauri:dev
+```
 
-2. Start the development server:
-    ```bash
-    npm run dev
-    # or
-    yarn dev
-    ```
+The desktop runtime creates and uses its SQLite database in the operating-system application-data directory.
 
-## Components
+## Project structure
 
-TailAdmin is a pre-designed starting point for building a web-based dashboard using React.js and Tailwind CSS. The
-template includes:
+```text
+src/
+  features/        Domain types, validation, repositories, and services
+  pages/Clinic/    Clinic routes and screens
+  components/      Reusable UI and feature components
+  locales/         Arabic and English translations
+  lib/             Runtime and database helpers
+src-tauri/
+  migrations/      SQLite schema migrations
+  src/             Tauri commands and native authentication
+docs/
+  tasks/           Product decisions and implementation records
+```
 
-- Sophisticated and accessible sidebar
-- Data visualization components
-- Prebuilt profile management and 404 page
-- Tables and Charts(Line and Bar)
-- Authentication forms and input elements
-- Alerts, Dropdowns, Modals, Buttons and more
-- FAQ & Accordion, Testimonials, and Carousels
-- Can't forget Dark Mode 🕶️
+## Documentation
 
-All components are built with React and styled using Tailwind CSS for easy customization.
+- [Architecture](docs/architecture.md)
+- [Project rules](docs/PROJECT_RULES.md)
+- [Database and migrations](docs/tasks/02-database-and-migrations.md)
+- [Local authentication and onboarding](docs/tasks/08-local-auth-and-onboarding.md)
+- [Windows release and installation](docs/tasks/07-windows-release-and-installation.md)
 
-## Feature Comparison
+## Release policy
 
-### Free Version
+The debug executable is for local development only and must not be shared with clinics. A user-facing Windows installer is produced only from an explicitly requested, reviewed Tauri release build. See the [release guide](docs/tasks/07-windows-release-and-installation.md) for the distribution path and validation checklist.
 
-- 1 Unique Dashboard
-- 35+ dashboard components
-- 50+ UI elements
-- Basic Figma design files
-- Community support
+## License and template attribution
 
-### Pro Version
-
-- 7 Unique Dashboards: Analytics, Ecommerce, Marketing, CRM, SaaS, Stocks, Logistics (more coming soon)
-- 500+ dashboard components and UI elements
-- Complete Figma design file
-- Email support
-
-To learn more about pro version features and pricing, visit our [pricing page](https://tailadmin.com/pricing).
-
-## Changelog
-
-### Version 2.4.0 - [September 13, 2026]
-
-- Added Internationalization (Multi Language) support.
-- Updated complete template styles to support RTL.
-- Added Yearly View into calendar page.
-- Updated `maplibre-gl` implementation with `react-map-gl`.
-- Replaced `@react-jvectormap` with `jsvectormap`.
-- Added new requested components and fixed noted accessibility issues.
-- Updated project structure and component compositions for easy adaption.
-- Added AGENTS.md to easily work with AI Agents.
-- Updated all the packages and libraries to the latest versions. Also removed unused packages.
-
-### Version 2.3.1 - [May 23, 2026]
-
-- Added AI Settings page to configure models, keys, and token limits.
-- Added Maps page with MapLibre GL, Leaflet, and iframe styles.
-- Added Vector Maps page powered by AmCharts 5 geodata (World & USA).
-- Added Radar Charts page with 3 unique formats.
-- Added Radial Progress Charts page featuring 4 custom layout templates.
-- Introduced new Bar Charts Five & Six and Pie Charts Four & Five.
-
-### Version 2.3.0 - [April 28, 2026]
-
-- Added **AI Dashboard** with token usage and revenue tracking.
-- Added **Sales Dashboard** with retention and multi-channel analytics.
-- Added **Finance Dashboard** with cashflow and balance management.
-- Introduced **6 New Layout variations** for improved UI flexibility.
-- Integrated **Advanced Data Visualization** with 7+ new chart types.
-
-### Version 2.1.0 - [Dec 30, 2025]
-
-- Resolved Date Picker positioning and input issues in Charts.
-
-### Version 2.0.2 - [March 25, 2025]
-
-- Upgraded to React 19
-- Included overrides for packages to prevent peer dependency errors.
-- Migrated from react-flatpickr to flatpickr package for React 19 support
-
-### Version 2.0.1 - [February 27, 2025]
-
-#### Update Overview
-
-- Upgraded to Tailwind CSS v4 for better performance and efficiency.
-- Updated class usage to match the latest syntax and features.
-- Replaced deprecated class and optimized styles.
-
-#### Next Steps
-
-- Run npm install or yarn install to update dependencies.
-- Check for any style changes or compatibility issues.
-- Refer to the Tailwind CSS v4 [Migration Guide](https://tailwindcss.com/docs/upgrade-guide) on this release. if needed.
-- This update keeps the project up to date with the latest Tailwind improvements. 🚀
-
-### Version 2.0.0 - [February 2025]
-
-A major update with comprehensive redesign and modern React patterns implementation.
-
-#### Major Improvements
-
-- Complete UI redesign with modern React patterns
-- New features: collapsible sidebar, chat, and calendar
-- Improved performance and accessibility
-- Updated data visualization using ApexCharts
-
-#### Key Features
-
-- Redesigned dashboards (Ecommerce, Analytics, Marketing, CRM)
-- Enhanced navigation with React Router integration
-- Advanced tables with sorting and filtering
-- Calendar with drag-and-drop support
-- New UI components and improved existing ones
-
-#### Breaking Changes
-
-- Updated sidebar component API
-- Migrated charts to ApexCharts
-- Revised authentication system
-
-[Read more](https://tailadmin.com/docs/update-logs/react) on this release.
-
-### Version 1.3.7 - [June 20, 2024]
-
-#### Enhancements
-
-1. Remove Repetition of DefaultLayout in every Pages
-2. Add ClickOutside Component for reduce repeated functionality in Header Message, Notification and User Dropdowns.
-
-### Version 1.3.6 - [Jan 31, 2024]
-
-#### Enhancements
-
-1. Integrate flatpickr in [Date Picker/Form Elements]
-2. Change color after select an option [Select Element/Form Elements].
-3. Make it functional [Multiselect Dropdown/Form Elements].
-4. Make best value editable [Pricing Table One/Pricing Table].
-5. Rearrange Folder structure.
-
-### Version 1.2.0 - [Apr 28, 2023]
-
-- Add Typescript in TailAdmin React.
-
-### Version 1.0.0 - Initial Release - [Mar 13, 2023]
-
-- Initial release of TailAdmin React.
-
-## License
-
-TailAdmin React.js Free Version is released under the MIT License.
-
-## Support
-
-If you find this project helpful, please consider giving it a star on GitHub. Your support helps us continue developing
-and maintaining this template.
+Clinic Desk is built from the TailAdmin React template. Preserve any upstream license notices that apply to the template and its bundled assets.

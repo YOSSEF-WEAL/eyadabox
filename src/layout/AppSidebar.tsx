@@ -1,4 +1,5 @@
 import { useSidebar } from "@/context/SidebarContext";
+import ClinicLogo from "@/components/common/ClinicLogo";
 import { CalenderIcon, DashboardAltIcon, MultiUserIcon, SettingsAltIcon, UserCircleIcon } from "@/icons";
 import { cn } from "@/utils";
 import { useEffect } from "react";
@@ -42,11 +43,7 @@ export default function AppSidebar() {
     >
       <div className={cn("flex py-8", showLabels ? "justify-start" : "xl:justify-center")}>
         <Link to="/" className="flex items-center gap-3" aria-label={t("clinic.appName")}>
-          {showLabels ? (
-            <span className="text-title-sm font-semibold text-gray-800 dark:text-white/90">{t("clinic.appName")}</span>
-          ) : (
-            <span className="flex size-8 items-center justify-center rounded-lg bg-brand-500 text-theme-sm font-bold text-white">C</span>
-          )}
+          <ClinicLogo className={cn("object-contain", showLabels ? "h-14 w-36" : "size-10")} />
         </Link>
       </div>
 

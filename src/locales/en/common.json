@@ -11,6 +11,7 @@
   },
   "clinic": {
     "appName": "Clinic Desk",
+    "brand": { "tagline": "Clinic operations, kept simple and local." },
     "navigation": {
       "dashboard": "Dashboard",
       "appointments": "Appointments",

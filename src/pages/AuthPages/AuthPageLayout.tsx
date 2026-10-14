@@ -1,6 +1,8 @@
 import GridShape from "@/components/common/GridShape";
+import ClinicLogo from "@/components/common/ClinicLogo";
 import ThemeTogglerTwo from "@/components/common/ThemeTogglerTwo";
 import React from "react";
+import { useTranslation } from "react-i18next";
 import { Link } from "react-router";
 
 export default function AuthLayout({
@@ -8,6 +10,8 @@ export default function AuthLayout({
 }: {
   children: React.ReactNode;
 }) {
+  const { t } = useTranslation();
+
   return (
     <div className="relative z-1 bg-white p-6 sm:p-0 dark:bg-gray-900">
       <div className="relative flex h-screen w-full flex-col justify-center sm:p-0 lg:flex-row dark:bg-gray-900">
@@ -18,16 +22,11 @@ export default function AuthLayout({
 
             <div className="flex max-w-xs flex-col items-center">
               <Link to="/" className="mb-4 block">
-                <img
-                  width={231}
-                  height={48}
-                  src="/images/logo/auth-logo.svg"
-                  alt="Logo"
-                />
+                <ClinicLogo className="h-44 w-56 rounded-2xl object-contain" />
               </Link>
 
               <p className="text-center text-gray-400 dark:text-white/60">
-                Free and Open-Source Tailwind CSS Admin Dashboard Template
+                {t("clinic.brand.tagline")}
               </p>
             </div>
           </div>
