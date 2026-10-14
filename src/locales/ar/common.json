@@ -1,0 +1,151 @@
+{
+  "common": {
+    "home": "الرئيسية",
+    "edit": "تعديل",
+    "close": "إغلاق",
+    "saveChanges": "حفظ التغييرات",
+    "viewMore": "عرض المزيد",
+    "delete": "حذف",
+    "filter": "تصفية",
+    "seeAll": "عرض الكل"
+  },
+  "clinic": {
+    "appName": "كلينك ديسك",
+    "navigation": {
+      "dashboard": "لوحة التحكم",
+      "appointments": "الحجوزات",
+      "patients": "المرضى",
+      "practitioners": "الأطباء",
+      "settings": "الإعدادات"
+    },
+    "dashboard": {
+      "loadError": "تعذر تحميل ملخص العيادة. حاول مرة أخرى.",
+      "noReason": "بدون سبب للزيارة",
+      "title": "نظرة عامة على العيادة",
+      "description": "عرض واضح ليوم العمل في العيادة.",
+      "todayAppointments": "حجوزات اليوم",
+      "waitingPatients": "مرضى في الانتظار",
+      "completedVisits": "زيارات مكتملة",
+      "newPatients": "مرضى جدد",
+      "nextAppointments": "الحجوزات القادمة",
+      "emptyScheduleTitle": "لا توجد حجوزات مجدولة بعد",
+      "emptyScheduleDescription": "أنشئ أول حجز لتبدأ تنظيم يوم العيادة."
+    },
+    "modules": {
+      "appointments": {
+        "title": "الحجوزات",
+        "description": "إدارة الجدول اليومي والتعديلات وحالات الحجز.",
+        "emptyTitle": "سيظهر جدول الحجوزات هنا"
+      },
+      "patients": {
+        "title": "المرضى",
+        "description": "البحث عن ملفات المرضى وتسجيلها وإدارتها بأمان.",
+        "emptyTitle": "سيظهر دليل المرضى هنا"
+      },
+      "practitioners": {
+        "title": "الأطباء",
+        "description": "إدارة الأطباء والتخصصات وساعات العمل.",
+        "emptyTitle": "ستظهر قائمة الأطباء هنا"
+      },
+      "settings": {
+        "title": "إعدادات العيادة",
+        "description": "إعداد بيانات العيادة والصلاحيات واللغة والنسخ الاحتياطي.",
+        "emptyTitle": "ستظهر إعدادات العيادة هنا"
+      },
+      "comingSoon": "يجري تجهيز هذه الوحدة ضمن مساحة عمل العيادة."
+    },
+    "actions": {
+      "add": "إضافة",
+      "view": "عرض",
+      "edit": "تعديل",
+      "cancel": "إلغاء",
+      "save": "حفظ",
+      "saving": "جارٍ الحفظ...",
+      "loading": "جارٍ التحميل..."
+    },
+    "patients": {
+      "addPatient": "إضافة مريض",
+      "addTitle": "إضافة مريض",
+      "editTitle": "تعديل المريض",
+      "formDescription": "أدخل بيانات المريض الأساسية التي تحتاجها العيادة.",
+      "searchPlaceholder": "ابحث بالاسم أو الهاتف أو رقم المريض...",
+      "noResults": "لا يوجد مرضى يطابقون البحث.",
+      "loadError": "تعذر تحميل المرضى. حاول مرة أخرى.",
+      "saveError": "تعذر حفظ المريض. حاول مرة أخرى.",
+      "fields": { "fullName": "الاسم بالكامل", "phone": "الهاتف", "dateOfBirth": "تاريخ الميلاد", "sex": "النوع", "address": "العنوان", "notes": "ملاحظات" },
+      "sexOptions": { "female": "أنثى", "male": "ذكر", "unspecified": "يفضل عدم الإجابة" },
+      "columns": { "patient": "المريض", "phone": "الهاتف", "dateOfBirth": "تاريخ الميلاد", "address": "العنوان", "actions": "إجراءات" }
+    },
+    "appointments": {
+      "listTitle": "قائمة الحجوزات",
+      "listDescription": "استخدم القائمة للمراجعة السريعة والتقويم لإدارة المواعيد.",
+      "unknownPatient": "مريض غير معروف",
+      "noResults": "لا توجد حجوزات مطابقة للفلاتر المحددة.",
+      "filters": { "practitioner": "الطبيب", "status": "الحالة", "allPractitioners": "كل الأطباء", "allStatuses": "كل الحالات" },
+      "calendar": { "today": "اليوم", "month": "شهر", "week": "أسبوع", "day": "يوم" },
+      "addAppointment": "إضافة حجز",
+      "addTitle": "إضافة حجز",
+      "editTitle": "تعديل الحجز",
+      "selectPatient": "اختر مريضًا",
+      "selectPractitioner": "اختر طبيبًا",
+      "loadError": "تعذر تحميل الحجوزات. حاول مرة أخرى.",
+      "saveError": "تعذر حفظ الحجز. حاول مرة أخرى.",
+      "fields": { "patient": "المريض", "practitioner": "الطبيب", "startsAt": "وقت البداية", "endsAt": "وقت النهاية", "status": "الحالة", "reason": "سبب الزيارة" },
+      "columns": { "patient": "المريض", "practitioner": "الطبيب", "time": "الوقت", "status": "الحالة", "actions": "إجراءات" },
+      "statuses": { "scheduled": "مجدول", "confirmed": "مؤكد", "arrived": "حضر", "completed": "مكتمل", "no_show": "لم يحضر", "cancelled": "ملغي" }
+    },
+    "practitioners": {
+      "workingHours": {
+        "title": "ساعات العمل الأسبوعية",
+        "description": "اختر الأيام والأوقات المتاحة لهذا الطبيب للحجوزات.",
+        "start": "وقت البداية",
+        "end": "وقت النهاية",
+        "daysCount": "{{count}} أيام عمل",
+        "unavailable": "غير متاح"
+      },
+      "days": { "0": "الأحد", "1": "الإثنين", "2": "الثلاثاء", "3": "الأربعاء", "4": "الخميس", "5": "الجمعة", "6": "السبت" },
+      "addPractitioner": "إضافة طبيب",
+      "addTitle": "إضافة طبيب",
+      "editTitle": "تعديل الطبيب",
+      "viewTitle": "تفاصيل الطبيب",
+      "backToList": "العودة إلى الأطباء",
+      "notFound": "لم يتم العثور على الطبيب.",
+      "loadError": "تعذر تحميل الأطباء. حاول مرة أخرى.",
+      "saveError": "تعذر حفظ الطبيب. حاول مرة أخرى.",
+      "fields": { "name": "الاسم", "specialty": "التخصص", "phone": "الهاتف" },
+      "columns": { "name": "الاسم", "specialty": "التخصص", "phone": "الهاتف", "workingHours": "ساعات العمل", "actions": "إجراءات" }
+    },
+    "settings": {
+      "title": "بيانات العيادة",
+      "description": "اضبط البيانات المستخدمة داخل مساحة عمل العيادة.",
+      "loadError": "تعذر تحميل إعدادات العيادة. حاول مرة أخرى.",
+      "saveError": "تعذر حفظ إعدادات العيادة. حاول مرة أخرى.",
+      "saved": "تم حفظ إعدادات العيادة.",
+      "fields": { "name": "اسم العيادة", "phone": "الهاتف", "address": "العنوان", "duration": "المدة الافتراضية للحجز (بالدقائق)" }
+    }
+  },
+  "sidebar": {
+    "groups": { "menu": "القائمة", "support": "الدعم", "others": "أخرى" },
+    "badges": { "new": "جديد", "pro": "احترافي" },
+    "items": {
+      "dashboard": "لوحة التحكم", "clinicDashboard": "نظرة عامة", "appointments": "الحجوزات", "patients": "المرضى", "practitioners": "الأطباء", "clinicSettings": "الإعدادات", "ecommerceHome": "التجارة الإلكترونية", "calendar": "التقويم", "userProfile": "الملف الشخصي", "forms": "النماذج", "formElements": "عناصر النماذج", "tables": "الجداول", "basicTables": "الجداول الأساسية", "pages": "الصفحات", "blankPage": "صفحة فارغة", "charts": "المخططات", "lineChart": "مخطط خطي", "barChart": "مخطط أعمدة", "uiElements": "عناصر الواجهة", "alerts": "التنبيهات", "avatar": "الصورة الشخصية", "badge": "الشارات", "buttons": "الأزرار", "images": "الصور", "videos": "الفيديوهات", "authentication": "تسجيل الدخول", "signIn": "تسجيل الدخول", "signUp": "إنشاء حساب"
+    },
+    "widget": { "title": "لوحة تحكم Tailwind CSS", "description": "قالب جاهز يحتوي على مكونات وصفحات للوحة التحكم.", "purchasePlan": "عرض الخطة" }
+  },
+  "header": {
+    "searchPlaceholder": "ابحث أو اكتب أمرًا...",
+    "toggleSidebar": "تبديل القائمة الجانبية",
+    "notifications": { "title": "الإشعارات", "requestsPermission": "يطلب الإذن بالتغيير", "project": "المشروع", "minAgo": "منذ {{count}} دقيقة", "hrAgo": "منذ {{count}} ساعة", "viewAll": "عرض كل الإشعارات" }
+  },
+  "userDropdown": { "editProfile": "تعديل الملف الشخصي", "accountSettings": "إعدادات الحساب", "support": "الدعم", "language": "اللغة", "signOut": "تسجيل الخروج" },
+  "ecommerce": {
+    "title": "لوحة التجارة الإلكترونية",
+    "metrics": { "customers": "العملاء", "orders": "الطلبات" },
+    "monthlySales": { "title": "المبيعات الشهرية", "series": "المبيعات" },
+    "monthlyTarget": { "title": "الهدف الشهري", "subtitle": "الهدف المحدد لكل شهر", "earned": "حققت {{amount}} اليوم، وهو أعلى من الشهر الماضي. استمر في العمل الجيد!", "target": "الهدف", "revenue": "الإيرادات", "today": "اليوم" },
+    "statistics": { "title": "الإحصاءات", "subtitle": "الهدف المحدد لكل شهر", "sales": "المبيعات", "revenue": "الإيرادات", "monthly": "شهري", "quarterly": "ربع سنوي", "annually": "سنوي", "selectDateRange": "اختر نطاق التاريخ" },
+    "recentOrders": { "title": "أحدث الطلبات", "products": "المنتجات", "category": "الفئة", "price": "السعر", "status": "الحالة", "variants": "{{count}} خيارات", "categories": { "laptop": "حاسوب محمول", "watch": "ساعة", "smartphone": "هاتف ذكي", "electronics": "إلكترونيات", "accessories": "إكسسوارات" }, "statuses": { "delivered": "تم التسليم", "pending": "قيد الانتظار", "canceled": "ملغى" } },
+    "demographic": { "title": "توزيع العملاء", "subtitle": "عدد العملاء حسب الدولة", "customers": "{{count}} عميل", "usa": "الولايات المتحدة", "france": "فرنسا" }
+  },
+  "notFound": { "error": "خطأ", "message": "لم نتمكن من العثور على الصفحة المطلوبة.", "backHome": "العودة إلى الرئيسية" }
+}
