@@ -8,6 +8,24 @@ Arabic and English interfaces are supported. The product uses the Arabic EyadaBo
 
 > Status: active development. The application is not yet released for clinic use.
 
+## Download for clinics
+
+**Windows x64 installer:** [Download EyadaBox Clinic Desk](https://github.com/YOSSEF-WEAL/eyadabox/releases/latest/download/EyadaBox-Setup-x64.exe)
+
+The direct link is reserved for the signed installer attached to the latest GitHub Release. It will become active when the first production release is published; it does not point to the development executable.
+
+### Client requirements
+
+| Requirement | What the clinic needs |
+| --- | --- |
+| Operating system | Windows 10 version 1803 or later, 64-bit; or Windows 11, 64-bit |
+| Internet during installation | Not required. The installer embeds the Microsoft WebView2 offline runtime. |
+| Extra software | None. The clinic does **not** need Node.js, npm, Rust, Visual Studio Build Tools, Java, .NET SDK, or a separate SQLite installation. |
+| Local permissions | Permission to install a normal Windows application for the current user. An administrator may be needed only if the device policy requires it. |
+| Storage | Space for the application, its local database, and clinic backups. |
+
+Windows 7, Windows 8/8.1, and 32-bit Windows are not supported release targets. Clinic Desk uses the Windows WebView2 platform, which is part of Windows 11 and modern Windows 10 installations; embedding the offline installer also covers devices where it is missing. [Tauri Windows installer guidance](https://v2.tauri.app/distribute/windows-installer/) and [Microsoft’s WebView2 documentation](https://learn.microsoft.com/en-us/microsoft-edge/webview2/concepts/distribution) describe these deployment options.
+
 ## What is implemented
 
 - Local first-run onboarding for the initial clinic administrator.
@@ -53,6 +71,8 @@ Sessions are cleared when the desktop application closes. There is no public sig
 - npm
 - Rust stable toolchain and the Windows C++ build prerequisites for Tauri development
 
+These are development requirements only; they are never required on a clinic computer that installs the released Windows installer.
+
 ### Run the browser interface
 
 ```bash
@@ -96,7 +116,7 @@ docs/
 
 ## Release policy
 
-The debug executable is for local development only and must not be shared with clinics. A user-facing Windows installer is produced only from an explicitly requested, reviewed Tauri release build. See the [release guide](docs/tasks/07-windows-release-and-installation.md) for the distribution path and validation checklist.
+The debug executable is for local development only and must not be shared with clinics. A user-facing Windows installer is produced only from an explicitly requested, reviewed Tauri release build. When publishing the release, upload the generated x64 NSIS installer under the stable asset name `EyadaBox-Setup-x64.exe` so the direct download link above remains valid. See the [release guide](docs/tasks/07-windows-release-and-installation.md) for the distribution path and validation checklist.
 
 ## License and template attribution
 
