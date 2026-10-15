@@ -1,7 +1,7 @@
 import { getDatabase } from "@/lib/database/client";
 import { toDatabaseError } from "@/lib/database/errors";
 import type { CreatePatientInput, Patient, UpdatePatientInput } from "../domain/types";
-import type { PatientRepository } from "./patientRepository";
+import type { PatientRepository, PatientSearchMode } from "./patientRepository";
 
 type PatientRow = {
   id: string;
@@ -63,18 +63,27 @@ export class SqlitePatientRepository implements PatientRepository {
     }
   }
 
-  async search(query: string): Promise<Patient[]> {
+  async search(query: string, mode: PatientSearchMode = "name"): Promise<Patient[]> {
     const value = `%${query.trim()}%`;
+    const searchColumn = mode === "phone" ? "phone" : "full_name";
     try {
       const database = await getDatabase();
       const rows = await database.select<PatientRow[]>(
-        `SELECT ${patientColumns} FROM patients WHERE archived_at IS NULL AND (full_name LIKE $1 COLLATE NOCASE OR phone LIKE $2 OR id LIKE $3) ORDER BY full_name COLLATE NOCASE ASC LIMIT 100`,
-        [value, value, value],
+        `SELECT ${patientColumns} FROM patients WHERE archived_at IS NULL AND ${searchColumn} LIKE $1 COLLATE NOCASE ORDER BY full_name COLLATE NOCASE ASC LIMIT 100`,
+        [value],
       );
       return rows.map(mapPatient);
     } catch (error) {
       throw toDatabaseError(error, "Unable to search patients.");
     }
+  }
+
+  async recent(limit: number): Promise<Patient[]> {
+    try {
+      const database = await getDatabase();
+      const rows = await database.select<PatientRow[]>(`SELECT ${patientColumns} FROM patients WHERE archived_at IS NULL ORDER BY created_at DESC LIMIT $1`, [Math.max(1, Math.min(limit, 100))]);
+      return rows.map(mapPatient);
+    } catch (error) { throw toDatabaseError(error, "Unable to load recent patients."); }
   }
 
   async update(id: string, input: UpdatePatientInput): Promise<Patient> {

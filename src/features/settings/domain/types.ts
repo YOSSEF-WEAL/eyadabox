@@ -3,6 +3,7 @@ export interface ClinicSettings {
   phone: string;
   address: string;
   defaultAppointmentMinutes: number;
+  sessionExpiryDays: number;
 }
 
 export type SaveClinicSettingsInput = ClinicSettings;

@@ -1,5 +1,6 @@
 import Label from "@/components/form/Label";
 import Input from "@/components/form/input/InputField";
+import PatientPicker from "@/components/patients/PatientPicker";
 import { Modal } from "@/components/ui/modal";
 import type { Appointment, AppointmentStatus, SaveAppointmentInput } from "@/features/appointments";
 import type { Patient } from "@/features/patients";
@@ -19,11 +20,12 @@ function toLocalDateTimeInput(value: string | undefined): string {
 function Form({ appointment, initialPatientId, initialStartsAt, initialEndsAt, patients, practitioners, error, isSaving, onClose, onSave }: Omit<Props, "isOpen">) {
   const { t } = useTranslation();
   const [form, setForm] = useState<SaveAppointmentInput>({ patientId: appointment?.patientId ?? initialPatientId ?? "", practitionerId: appointment?.practitionerId ?? "", startsAt: toLocalDateTimeInput(appointment?.startsAt ?? initialStartsAt), endsAt: toLocalDateTimeInput(appointment?.endsAt ?? initialEndsAt), status: appointment?.status ?? "scheduled", reason: appointment?.reason ?? "", notes: appointment?.notes ?? "" });
+  const [selectedPatient, setSelectedPatient] = useState<Patient | null>(() => patients.find((patient) => patient.id === (appointment?.patientId ?? initialPatientId)) ?? null);
   const setValue = <Key extends keyof SaveAppointmentInput>(key: Key, value: SaveAppointmentInput[Key]) => setForm((current) => ({ ...current, [key]: value }));
   const save = async (event: FormEvent<HTMLFormElement>) => { event.preventDefault(); await onSave({ ...form, startsAt: new Date(form.startsAt).toISOString(), endsAt: new Date(form.endsAt).toISOString() }); };
 
   return <form onSubmit={save} className="p-6 sm:p-8"><h2 className="text-title-sm font-semibold text-gray-800 dark:text-white/90">{t(appointment ? "clinic.appointments.editTitle" : "clinic.appointments.addTitle")}</h2>{error && <p className="mt-4 rounded-lg bg-error-50 p-3 text-theme-sm text-error-600 dark:bg-error-500/15 dark:text-error-400">{error}</p>}<div className="mt-6 grid gap-5 sm:grid-cols-2">
-    <div><Label htmlFor="appointment-patient">{t("clinic.appointments.fields.patient")}</Label><select id="appointment-patient" value={form.patientId} onChange={(event) => setValue("patientId", event.target.value)} required className="h-11 w-full rounded-lg border border-gray-300 bg-transparent px-4 text-sm text-gray-800 shadow-theme-xs dark:border-gray-700 dark:bg-gray-900 dark:text-white/90"><option value="">{t("clinic.appointments.selectPatient")}</option>{patients.map((patient) => <option key={patient.id} value={patient.id}>{patient.fullName}</option>)}</select></div>
+    <div><Label>{t("clinic.appointments.fields.patient")}</Label><PatientPicker selectedPatient={selectedPatient} onSelect={(patient) => { setSelectedPatient(patient); setValue("patientId", patient.id); }} /><input type="hidden" value={form.patientId} required /></div>
     <div><Label htmlFor="appointment-practitioner">{t("clinic.appointments.fields.practitioner")}</Label><select id="appointment-practitioner" value={form.practitionerId} onChange={(event) => setValue("practitionerId", event.target.value)} required className="h-11 w-full rounded-lg border border-gray-300 bg-transparent px-4 text-sm text-gray-800 shadow-theme-xs dark:border-gray-700 dark:bg-gray-900 dark:text-white/90"><option value="">{t("clinic.appointments.selectPractitioner")}</option>{practitioners.map((practitioner) => <option key={practitioner.id} value={practitioner.id}>{practitioner.displayName}</option>)}</select></div>
     <div><Label htmlFor="appointment-start">{t("clinic.appointments.fields.startsAt")}</Label><Input id="appointment-start" type="datetime-local" value={form.startsAt} onChange={(event) => setValue("startsAt", event.target.value)} required /></div>
     <div><Label htmlFor="appointment-end">{t("clinic.appointments.fields.endsAt")}</Label><Input id="appointment-end" type="datetime-local" value={form.endsAt} onChange={(event) => setValue("endsAt", event.target.value)} required /></div>

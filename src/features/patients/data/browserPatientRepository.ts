@@ -1,5 +1,5 @@
 import type { CreatePatientInput, Patient, UpdatePatientInput } from "../domain/types";
-import type { PatientRepository } from "./patientRepository";
+import type { PatientRepository, PatientSearchMode } from "./patientRepository";
 
 const STORAGE_KEY = "clinic-desk.demo-patients";
 
@@ -50,11 +50,15 @@ export class BrowserPatientRepository implements PatientRepository {
     return readPatients().find((patient) => patient.id === id) ?? null;
   }
 
-  async search(query: string): Promise<Patient[]> {
+  async search(query: string, mode: PatientSearchMode = "name"): Promise<Patient[]> {
     const normalizedQuery = query.trim().toLocaleLowerCase();
     return readPatients().filter((patient) =>
-      !patient.archivedAt && (!normalizedQuery || [patient.id, patient.fullName, patient.phone ?? ""].some((value) => value.toLocaleLowerCase().includes(normalizedQuery))),
+      !patient.archivedAt && (!normalizedQuery || (mode === "phone" ? patient.phone ?? "" : patient.fullName).toLocaleLowerCase().includes(normalizedQuery)),
     );
+  }
+
+  async recent(limit: number): Promise<Patient[]> {
+    return readPatients().filter((patient) => !patient.archivedAt).sort((first, second) => second.createdAt.localeCompare(first.createdAt)).slice(0, limit);
   }
 
   async update(id: string, input: UpdatePatientInput): Promise<Patient> {

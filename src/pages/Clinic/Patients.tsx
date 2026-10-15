@@ -2,9 +2,10 @@ import PatientFormModal from "@/components/patients/PatientFormModal";
 import PatientTable from "@/components/patients/PatientTable";
 import PageBreadCrumb from "@/components/common/PageBreadCrumb";
 import PageMeta from "@/components/common/PageMeta";
-import { patientService, type CreatePatientInput, type Patient } from "@/features/patients";
+import PatientSearchControls from "@/components/patients/PatientSearchControls";
+import { patientService, type CreatePatientInput, type Patient, type PatientSearchMode } from "@/features/patients";
 import { useModal } from "@/hooks/useModal";
-import { PlusIcon, SearchIcon } from "@/icons";
+import { PlusIcon } from "@/icons";
 import { useCallback, useEffect, useState } from "react";
 import { useTranslation } from "react-i18next";
 import { useNavigate } from "react-router";
@@ -15,6 +16,7 @@ export default function Patients() {
   const { isOpen, openModal, closeModal } = useModal();
   const [patients, setPatients] = useState<Patient[]>([]);
   const [query, setQuery] = useState("");
+  const [searchMode, setSearchMode] = useState<PatientSearchMode>("name");
   const [selectedPatient, setSelectedPatient] = useState<Patient | null>(null);
   const [isLoading, setIsLoading] = useState(true);
   const [isSaving, setIsSaving] = useState(false);
@@ -23,13 +25,13 @@ export default function Patients() {
   const loadPatients = useCallback(async (searchQuery: string) => {
     setIsLoading(true);
     try {
-      setPatients(await patientService.search(searchQuery));
+      setPatients(await patientService.search(searchQuery, searchMode));
     } catch {
       setError(t("clinic.patients.loadError"));
     } finally {
       setIsLoading(false);
     }
-  }, [t]);
+  }, [searchMode, t]);
 
   useEffect(() => { void loadPatients(query); }, [loadPatients, query]);
 
@@ -64,7 +66,7 @@ export default function Patients() {
           <button type="button" onClick={handleAdd} className="inline-flex items-center justify-center gap-2 rounded-lg bg-brand-500 px-4 py-3 text-theme-sm font-medium text-white hover:bg-brand-600"><PlusIcon className="size-4" />{t("clinic.patients.addPatient")}</button>
         </div>
         <div className="p-5">
-          <div className="relative max-w-md"><SearchIcon className="pointer-events-none absolute inset-s-4 top-1/2 size-5 -translate-y-1/2 text-gray-400" /><input value={query} onChange={(event) => setQuery(event.target.value)} placeholder={t("clinic.patients.searchPlaceholder")} className="h-11 w-full rounded-lg border border-gray-300 bg-transparent py-2.5 ps-12 pe-4 text-sm text-gray-800 shadow-theme-xs placeholder:text-gray-400 focus:border-brand-300 focus:ring-3 focus:ring-brand-500/20 focus:outline-hidden dark:border-gray-700 dark:bg-gray-900 dark:text-white/90 dark:focus:border-brand-800" /></div>
+          <div className="max-w-md"><PatientSearchControls query={query} mode={searchMode} onQueryChange={setQuery} onModeChange={(mode) => { setSearchMode(mode); setQuery(""); }} /></div>
         </div>
         {isLoading ? <div className="py-14 text-center text-theme-sm text-gray-500 dark:text-gray-400">{t("clinic.actions.loading")}</div> : <PatientTable patients={patients} onEdit={handleEdit} onView={handleView} />}
       </section>
