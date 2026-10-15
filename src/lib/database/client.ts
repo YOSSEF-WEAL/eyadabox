@@ -17,3 +17,7 @@ export function getDatabase(): Promise<Database> {
 
   return databasePromise;
 }
+
+export function resetDatabaseConnection(): void {
+  databasePromise = undefined;
+}

@@ -50,8 +50,8 @@ export default function UserDropdown() {
         onClick={toggleDropdown}
         className="dropdown-toggle flex items-center text-gray-700 dark:text-gray-400"
       >
-        <span className="me-3 h-11 w-11 overflow-hidden rounded-full">
-          <img src="/images/user/owner.png" alt="User" />
+        <span className="me-3 flex h-11 w-11 items-center justify-center overflow-hidden rounded-full bg-gray-100 text-gray-400 dark:bg-gray-800 dark:text-gray-500">
+          {user?.avatarDataUrl ? <img src={user.avatarDataUrl} alt={user.displayName} className="size-full object-cover" /> : <span className="text-theme-sm font-semibold">{user?.displayName.slice(0, 1).toUpperCase()}</span>}
         </span>
 
         <span className="me-1 block text-theme-sm font-medium">{user?.displayName}</span>

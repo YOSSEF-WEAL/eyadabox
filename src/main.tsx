@@ -9,6 +9,7 @@ import { AppWrapper } from "./components/common/PageMeta.tsx";
 import { LanguageProvider } from "./context/LanguageContext.tsx";
 import { ThemeProvider } from "./context/ThemeContext.tsx";
 import { AuthProvider } from "./features/auth/AuthProvider.tsx";
+import DatabaseRecoveryGate from "./lib/database/DatabaseRecoveryGate.tsx";
 import "./i18n";
 import "./index.css";
 
@@ -16,7 +17,7 @@ createRoot(document.getElementById("root")!).render(
   <StrictMode>
     <ThemeProvider>
       <LanguageProvider>
-        <AuthProvider><AppWrapper><App /></AppWrapper></AuthProvider>
+        <DatabaseRecoveryGate><AuthProvider><AppWrapper><App /></AppWrapper></AuthProvider></DatabaseRecoveryGate>
       </LanguageProvider>
     </ThemeProvider>
   </StrictMode>,

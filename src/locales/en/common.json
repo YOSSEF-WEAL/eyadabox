@@ -165,7 +165,17 @@
     "auth": {
       "title": "Secure local access", "description": "Sign in to this clinic device.", "nativeDescription": "Secure sign-in is available only in the installed Clinic Desk desktop app.",
       "setupTitle": "Set up your clinic", "setupDescription": "Create the first administrator account for this device.", "signInTitle": "Sign in", "signIn": "Sign in", "createAdmin": "Create administrator", "displayName": "Display name", "username": "Username", "password": "Password", "confirmPassword": "Confirm password",
+      "language": { "label": "Language", "english": "English", "arabic": "Arabic" },
       "errors": { "invalidCredentials": "Invalid username or password.", "accountLocked": "This account is temporarily locked. Try again in 15 minutes.", "displayNameRequired": "Enter a display name.", "usernameInvalid": "Use 3–50 letters, numbers, dots, dashes, or underscores.", "passwordWeak": "Password must contain at least 10 characters.", "passwordMismatch": "Passwords do not match.", "usernameTaken": "That username is already in use.", "setupComplete": "Initial setup has already been completed.", "nativeRequired": "Open the installed desktop app to sign in.", "unavailable": "Secure sign-in is unavailable. Please try again." }
+    },
+    "databaseRecovery": {
+      "checking": "Checking the local clinic data…",
+      "title": "Local data needs attention",
+      "description": "This version cannot safely open the existing local data. Create a new workspace to continue, or close the app and contact support to keep working with the existing data.",
+      "backupNotice": "Creating a new workspace keeps a backup of the existing data on this device, but you will need to create the first administrator account again.",
+      "createNew": "Create new workspace",
+      "creating": "Creating new workspace…",
+      "close": "Close app"
     }
   },
   "sidebar": {
@@ -297,12 +307,20 @@
     "searchPlaceholder": "Search or type command...",
     "toggleSidebar": "Toggle Sidebar",
     "notifications": {
-      "title": "Notification",
+      "title": "Notifications",
       "requestsPermission": "requests permission to change",
       "project": "Project",
       "minAgo": "{count} min ago",
       "hrAgo": "{count} hr ago",
-      "viewAll": "View All Notifications"
+      "viewAll": "View All Notifications",
+      "loading": "Checking upcoming appointments…",
+      "empty": "No appointments need your attention.",
+      "unread": "{count} new",
+      "overdue": "{name} had an appointment at {time} that still needs attention.",
+      "today": "{name} has an appointment today at {time}.",
+      "upcoming": "{name} has an appointment in the next 24 hours at {time}.",
+      "openAppointments": "Open appointments",
+      "unknownPatient": "A patient"
     }
   },
   "userDropdown": {
@@ -312,6 +330,7 @@
     "language": "Language",
     "signOut": "Sign out"
   },
+  "profile": { "title": "My profile", "description": "Manage your local account details and profile photo.", "personalTitle": "Personal information", "displayName": "Display name", "username": "Username", "phone": "Phone", "role": "Role", "bio": "Bio", "uploadPhoto": "Upload photo", "removePhoto": "Remove photo", "avatarHelp": "PNG, JPEG, or WebP up to 2 MB.", "avatarAlt": "Profile photo", "avatarInvalid": "Choose an image up to 2 MB.", "save": "Save changes", "saved": "Your profile was saved.", "saveError": "Unable to save your profile. Please try again.", "passwordTitle": "Change password", "currentPassword": "Current password", "newPassword": "New password", "confirmPassword": "Confirm new password", "changePassword": "Update password", "passwordMismatch": "New passwords do not match.", "passwordSaved": "Your password was updated.", "passwordError": "Unable to update password. Check your current password and try again.", "roles": { "admin": "Administrator", "doctor": "Doctor", "receptionist": "Receptionist" } },
   "ecommerce": {
     "title": "E-commerce Dashboard",
     "metrics": {

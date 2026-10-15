@@ -7,6 +7,7 @@
 @theme {
   --font-*: initial;
   --font-outfit: Outfit, sans-serif;
+  --font-arabic: Tahoma, "Segoe UI", sans-serif;
 
   --breakpoint-*: initial;
   --breakpoint-2xsm: 375px;
@@ -194,6 +195,8 @@
   body {
     @apply relative z-1 bg-gray-50 font-outfit font-normal;
   }
+
+  html[lang="ar"] body { font-family: var(--font-arabic); }
 }
 
 @utility menu-item {

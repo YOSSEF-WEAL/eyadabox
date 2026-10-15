@@ -20,6 +20,11 @@ export default defineConfig({
       },
     }),
   ],
+  server: {
+    watch: {
+      ignored: ["**/src-tauri/target/**"],
+    },
+  },
   build: {
     rolldownOptions: {
       onwarn(warning, warn) {

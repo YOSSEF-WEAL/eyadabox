@@ -165,7 +165,17 @@
     "auth": {
       "title": "دخول محلي آمن", "description": "سجّل الدخول إلى جهاز العيادة.", "nativeDescription": "تسجيل الدخول الآمن متاح فقط من تطبيق Clinic Desk المكتبي المثبّت.",
       "setupTitle": "إعداد العيادة", "setupDescription": "أنشئ حساب المدير الأول لهذا الجهاز.", "signInTitle": "تسجيل الدخول", "signIn": "دخول", "createAdmin": "إنشاء المدير", "displayName": "اسم العرض", "username": "اسم المستخدم", "password": "كلمة المرور", "confirmPassword": "تأكيد كلمة المرور",
+      "language": { "label": "اللغة", "english": "الإنجليزية", "arabic": "العربية" },
       "errors": { "invalidCredentials": "اسم المستخدم أو كلمة المرور غير صحيحين.", "accountLocked": "هذا الحساب مقفل مؤقتًا. حاول بعد 15 دقيقة.", "displayNameRequired": "أدخل اسم العرض.", "usernameInvalid": "استخدم من 3 إلى 50 حرفًا أو رقمًا أو نقطة أو شرطة.", "passwordWeak": "يجب أن تحتوي كلمة المرور على 10 أحرف على الأقل.", "passwordMismatch": "كلمتا المرور غير متطابقتين.", "usernameTaken": "اسم المستخدم مستخدم بالفعل.", "setupComplete": "تم إعداد الحساب الأول بالفعل.", "nativeRequired": "افتح تطبيق سطح المكتب المثبّت لتسجيل الدخول.", "unavailable": "تعذر الوصول إلى تسجيل الدخول الآمن. حاول مرة أخرى." }
+    },
+    "databaseRecovery": {
+      "checking": "جارٍ فحص بيانات العيادة المحلية…",
+      "title": "تحتاج البيانات المحلية إلى مراجعة",
+      "description": "لا يمكن لهذا الإصدار فتح البيانات المحلية الحالية بأمان. أنشئ مساحة عمل جديدة للمتابعة، أو أغلق التطبيق وتواصل مع الدعم إذا أردت الاحتفاظ بالبيانات الحالية.",
+      "backupNotice": "إنشاء مساحة عمل جديدة يحتفظ بنسخة احتياطية من البيانات الحالية على هذا الجهاز، لكن ستحتاج إلى إنشاء حساب المدير الأول مرة أخرى.",
+      "createNew": "إنشاء مساحة عمل جديدة",
+      "creating": "جارٍ إنشاء مساحة عمل جديدة…",
+      "close": "إغلاق التطبيق"
     }
   },
   "sidebar": {
@@ -179,9 +189,10 @@
   "header": {
     "searchPlaceholder": "ابحث أو اكتب أمرًا...",
     "toggleSidebar": "تبديل القائمة الجانبية",
-    "notifications": { "title": "الإشعارات", "requestsPermission": "يطلب الإذن بالتغيير", "project": "المشروع", "minAgo": "منذ {{count}} دقيقة", "hrAgo": "منذ {{count}} ساعة", "viewAll": "عرض كل الإشعارات" }
+    "notifications": { "title": "الإشعارات", "requestsPermission": "يطلب الإذن بالتغيير", "project": "المشروع", "minAgo": "منذ {{count}} دقيقة", "hrAgo": "منذ {{count}} ساعة", "viewAll": "عرض كل الإشعارات", "loading": "جارٍ مراجعة المواعيد القادمة…", "empty": "لا توجد مواعيد تحتاج إلى انتباهك.", "unread": "{count} جديد", "overdue": "موعد {name} في {time} يحتاج إلى متابعة.", "today": "لدى {name} موعد اليوم في {time}.", "upcoming": "لدى {name} موعد خلال الـ 24 ساعة القادمة في {time}.", "openAppointments": "فتح المواعيد", "unknownPatient": "مريض" }
   },
   "userDropdown": { "editProfile": "تعديل الملف الشخصي", "accountSettings": "إعدادات الحساب", "support": "الدعم", "language": "اللغة", "signOut": "تسجيل الخروج" },
+  "profile": { "title": "ملفي الشخصي", "description": "إدارة بيانات حسابك المحلية وصورة الملف الشخصي.", "personalTitle": "البيانات الشخصية", "displayName": "اسم العرض", "username": "اسم المستخدم", "phone": "الهاتف", "role": "الدور", "bio": "نبذة", "uploadPhoto": "رفع صورة", "removePhoto": "إزالة الصورة", "avatarHelp": "PNG أو JPEG أو WebP بحجم حتى 2 ميجابايت.", "avatarAlt": "صورة الملف الشخصي", "avatarInvalid": "اختر صورة بحجم حتى 2 ميجابايت.", "save": "حفظ التغييرات", "saved": "تم حفظ ملفك الشخصي.", "saveError": "تعذر حفظ ملفك الشخصي. حاول مرة أخرى.", "passwordTitle": "تغيير كلمة المرور", "currentPassword": "كلمة المرور الحالية", "newPassword": "كلمة المرور الجديدة", "confirmPassword": "تأكيد كلمة المرور الجديدة", "changePassword": "تحديث كلمة المرور", "passwordMismatch": "كلمتا المرور الجديدتان غير متطابقتين.", "passwordSaved": "تم تحديث كلمة المرور.", "passwordError": "تعذر تحديث كلمة المرور. تحقق من كلمة المرور الحالية وحاول مرة أخرى.", "roles": { "admin": "مدير", "doctor": "طبيب", "receptionist": "استقبال" } },
   "ecommerce": {
     "title": "لوحة التجارة الإلكترونية",
     "metrics": { "customers": "العملاء", "orders": "الطلبات" },

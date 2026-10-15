@@ -8,4 +8,6 @@ export const authService = {
   async setup(displayName: string, username: string, password: string): Promise<AuthUser> { nativeOnly(); return invoke<AuthUser>("bootstrap_first_admin", { displayName, username, password }); },
   async signIn(username: string, password: string): Promise<AuthUser> { nativeOnly(); return invoke<AuthUser>("sign_in", { username, password }); },
   async signOut(): Promise<void> { nativeOnly(); return invoke("sign_out"); },
+  async updateProfile(displayName: string, profilePhone: string, profileBio: string, avatarDataUrl: string | null): Promise<AuthUser> { nativeOnly(); return invoke<AuthUser>("update_profile", { displayName, profilePhone, profileBio, avatarDataUrl }); },
+  async changePassword(currentPassword: string, newPassword: string): Promise<void> { nativeOnly(); return invoke("change_password", { currentPassword, newPassword }); },
 };

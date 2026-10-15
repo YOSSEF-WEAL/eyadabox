@@ -1,29 +1,22 @@
+import { useState, type ChangeEvent, type FormEvent } from "react";
+import { useTranslation } from "react-i18next";
 import PageBreadcrumb from "@/components/common/PageBreadCrumb";
 import PageMeta from "@/components/common/PageMeta";
-import DangerZone from "@/components/UserProfile/DangerZone";
-import Security from "@/components/UserProfile/Security";
-import UserAddressCard from "@/components/UserProfile/UserAddressCard";
-import UserMetaCard from "@/components/UserProfile/UserMetaCard";
+import Input from "@/components/form/input/InputField";
+import Label from "@/components/form/Label";
+import Button from "@/components/ui/button/Button";
+import { useAuth } from "@/features/auth/AuthProvider";
+import type { AuthUser } from "@/features/auth/domain/types";
+import { UserAltIcon } from "@/icons";
 
-export default function UserProfiles() {
-  return (
-    <>
-      <PageMeta
-        title="React.js Profile Dashboard | TailAdmin - React.js Admin Dashboard Template"
-        description="This is React.js Profile Dashboard page for TailAdmin - React.js Tailwind CSS Admin Dashboard Template"
-      />
-      <PageBreadcrumb pageTitle="Profile" />
-      <div className="rounded-2xl border border-gray-200 bg-white p-5 lg:p-6 dark:border-gray-800 dark:bg-white/3">
-        <h3 className="mb-5 text-lg font-semibold text-gray-800 lg:mb-7 dark:text-white/90">
-          Profile
-        </h3>
-        <div className="space-y-6">
-          <UserMetaCard />
-          <UserAddressCard />
-          <Security />
-          <DangerZone />
-        </div>
-      </div>
-    </>
-  );
+function ProfileEditor({ user }: { user: AuthUser }) {
+  const { t } = useTranslation(); const { updateProfile } = useAuth();
+  const [displayName, setDisplayName] = useState(user.displayName); const [phone, setPhone] = useState(user.profilePhone ?? ""); const [bio, setBio] = useState(user.profileBio ?? ""); const [avatar, setAvatar] = useState<string | null>(user.avatarDataUrl); const [saving, setSaving] = useState(false); const [error, setError] = useState(""); const [saved, setSaved] = useState(false);
+  const selectAvatar = (event: ChangeEvent<HTMLInputElement>) => { const file = event.target.files?.[0]; if (!file) return; if (!file.type.startsWith("image/") || file.size > 2_000_000) { setError(t("profile.avatarInvalid")); return; } const reader = new FileReader(); reader.onload = () => setAvatar(typeof reader.result === "string" ? reader.result : null); reader.readAsDataURL(file); };
+  const save = async (event: FormEvent<HTMLFormElement>) => { event.preventDefault(); setSaving(true); setError(""); setSaved(false); try { await updateProfile(displayName, phone, bio, avatar); setSaved(true); } catch { setError(t("profile.saveError")); } finally { setSaving(false); } };
+  return <form onSubmit={save} className="space-y-6"><section className="rounded-2xl border border-gray-200 p-5 dark:border-gray-800"><div className="flex flex-col gap-6 sm:flex-row sm:items-center"><div className="flex size-24 shrink-0 items-center justify-center overflow-hidden rounded-full bg-gray-100 text-gray-400 dark:bg-gray-800 dark:text-gray-500">{avatar ? <img src={avatar} alt={t("profile.avatarAlt")} className="size-full object-cover" /> : <UserAltIcon className="size-12" />}</div><div><h2 className="text-lg font-semibold text-gray-800 dark:text-white/90">{user.displayName}</h2><p className="mt-1 text-theme-sm text-gray-500 dark:text-gray-400">{t(`profile.roles.${user.role}`)}</p><div className="mt-4 flex flex-wrap gap-3"><label className="inline-flex cursor-pointer items-center rounded-lg bg-brand-500 px-4 py-2.5 text-theme-sm font-medium text-white hover:bg-brand-600"><input type="file" accept="image/png,image/jpeg,image/webp" className="hidden" onChange={selectAvatar} />{t("profile.uploadPhoto")}</label>{avatar && <button type="button" onClick={() => setAvatar(null)} className="rounded-lg border border-gray-300 px-4 py-2.5 text-theme-sm font-medium text-gray-700 hover:bg-gray-50 dark:border-gray-700 dark:text-gray-300 dark:hover:bg-white/5">{t("profile.removePhoto")}</button>}</div><p className="mt-3 text-theme-xs text-gray-500 dark:text-gray-400">{t("profile.avatarHelp")}</p></div></div></section><section className="rounded-2xl border border-gray-200 p-5 dark:border-gray-800"><h2 className="text-lg font-semibold text-gray-800 dark:text-white/90">{t("profile.personalTitle")}</h2><div className="mt-6 grid gap-5 sm:grid-cols-2"><div><Label>{t("profile.displayName")}</Label><Input value={displayName} onChange={(event) => setDisplayName(event.target.value)} /></div><div><Label>{t("profile.username")}</Label><Input value={user.username} disabled /></div><div><Label>{t("profile.phone")}</Label><Input value={phone} onChange={(event) => setPhone(event.target.value)} inputMode="tel" /></div><div><Label>{t("profile.role")}</Label><Input value={t(`profile.roles.${user.role}`)} disabled /></div><div className="sm:col-span-2"><Label>{t("profile.bio")}</Label><Input value={bio} onChange={(event) => setBio(event.target.value)} maxLength={280} /></div></div>{error && <p className="mt-5 rounded-lg bg-error-50 p-3 text-theme-sm text-error-600 dark:bg-error-500/10 dark:text-error-300">{error}</p>}{saved && <p className="mt-5 rounded-lg bg-success-50 p-3 text-theme-sm text-success-700 dark:bg-success-500/10 dark:text-success-300">{t("profile.saved")}</p>}<div className="mt-6"><Button size="sm" disabled={saving}>{t(saving ? "clinic.actions.saving" : "profile.save")}</Button></div></section></form>;
 }
+
+function PasswordPanel() { const { t } = useTranslation(); const { changePassword } = useAuth(); const [current, setCurrent] = useState(""); const [next, setNext] = useState(""); const [confirm, setConfirm] = useState(""); const [message, setMessage] = useState(""); const save = async (event: FormEvent<HTMLFormElement>) => { event.preventDefault(); if (next !== confirm) { setMessage(t("profile.passwordMismatch")); return; } try { await changePassword(current, next); setCurrent(""); setNext(""); setConfirm(""); setMessage(t("profile.passwordSaved")); } catch { setMessage(t("profile.passwordError")); } }; return <section className="rounded-2xl border border-gray-200 p-5 dark:border-gray-800"><h2 className="text-lg font-semibold text-gray-800 dark:text-white/90">{t("profile.passwordTitle")}</h2><form onSubmit={save} className="mt-6 grid gap-5 sm:grid-cols-2"><div className="sm:col-span-2"><Label>{t("profile.currentPassword")}</Label><Input type="password" value={current} onChange={(event) => setCurrent(event.target.value)} /></div><div><Label>{t("profile.newPassword")}</Label><Input type="password" value={next} onChange={(event) => setNext(event.target.value)} /></div><div><Label>{t("profile.confirmPassword")}</Label><Input type="password" value={confirm} onChange={(event) => setConfirm(event.target.value)} /></div>{message && <p className="sm:col-span-2 text-theme-sm text-gray-600 dark:text-gray-300">{message}</p>}<div><Button size="sm">{t("profile.changePassword")}</Button></div></form></section>; }
+
+export default function UserProfiles() { const { t } = useTranslation(); const { user } = useAuth(); return <><PageMeta title={`${t("profile.title")} | Clinic Desk`} description={t("profile.description")} /><PageBreadcrumb pageTitle={t("profile.title")} /><div className="space-y-6 rounded-2xl border border-gray-200 bg-white p-5 dark:border-gray-800 dark:bg-white/3">{user && <ProfileEditor key={user.id} user={user} />}<PasswordPanel /></div></>; }
