@@ -29,11 +29,14 @@ Windows 7, Windows 8/8.1, and 32-bit Windows are not supported release targets. 
 ## What is implemented
 
 - Local first-run onboarding for the initial clinic administrator.
-- Native local sign-in with memory-only sessions and role-aware access.
+- Native local sign-in with persistent, expiring local sessions and role-aware access.
 - Patient registration, search, editing, profile history, and archive protection.
-- Appointment calendar and list views, practitioner filtering, editing, and conflict prevention.
+- Appointment calendar and list views, practitioner filtering, editing, conflict prevention, and global patient/appointment search.
 - Practitioner profiles and weekly working hours.
-- Clinic settings and local staff metadata management.
+- Clinic settings organized into clinic, updates, backups, and Danger Zone tabs.
+- Native app-update checks with download-and-restart support for published signed releases.
+- Admin-only local backup, restore, CSV export, data-cleanup, and factory-reset controls with safety backups and audit events.
+- Focused appointment notifications for overdue, today, and upcoming appointments.
 - SQLite persistence in the operating-system application-data directory when running as the desktop app.
 - Bilingual Arabic/English UI with RTL support.
 
@@ -61,7 +64,7 @@ Windows 7, Windows 8/8.1, and 32-bit Windows are not supported release targets. 
 3. Create the first local administrator account.
 4. Sign in to reach the clinic workspace.
 
-Sessions are cleared when the desktop application closes. There is no public sign-up flow or cloud recovery flow in the current release scope.
+Sessions remain available on the device until their configured expiry date. There is no public sign-up flow or cloud recovery flow in the current release scope.
 
 ## Development
 
@@ -89,6 +92,22 @@ npm run tauri:dev
 ```
 
 The desktop runtime creates and uses its SQLite database in the operating-system application-data directory.
+
+### Build a local Windows installer
+
+Close Clinic Desk first, then run:
+
+```powershell
+.\scripts\build-local.ps1
+```
+
+If you explicitly want the script to close the local test app before building, use:
+
+```powershell
+.\scripts\build-local.ps1 -StopRunningApp
+```
+
+The script writes an offline x64 NSIS installer under `src-tauri/target/release/bundle/nsis/`. It intentionally skips updater-signature artifacts; use the tagged GitHub Release workflow for a publishable, signed update.
 
 ## Project structure
 

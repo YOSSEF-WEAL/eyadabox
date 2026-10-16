@@ -2,17 +2,17 @@
 
 import { ThemeToggleButton } from "@/components/common/ThemeToggleButton";
 import ClinicLogo from "@/components/common/ClinicLogo";
+import GlobalClinicSearch from "@/components/header/GlobalClinicSearch";
 import NotificationDropdown from "@/components/header/NotificationDropdown";
 import UserDropdown from "@/components/header/UserDropdown";
 import { useSidebar } from "@/context/SidebarContext";
 import { cn } from "@/utils";
-import { useEffect, useRef, useState } from "react";
+import { useState } from "react";
 import { useTranslation } from "react-i18next";
 import { Link } from "react-router";
 
 const AppHeader: React.FC = () => {
   const { t } = useTranslation();
-  const inputRef = useRef<HTMLInputElement>(null);
   const [isApplicationMenuOpen, setApplicationMenuOpen] = useState(false);
 
   const { isMobileOpen, toggleSidebar, toggleMobileSidebar } = useSidebar();
@@ -28,21 +28,6 @@ const AppHeader: React.FC = () => {
   const toggleApplicationMenu = () => {
     setApplicationMenuOpen(!isApplicationMenuOpen);
   };
-
-  useEffect(() => {
-    const handleKeyDown = (event: KeyboardEvent) => {
-      if ((event.metaKey || event.ctrlKey) && event.key === "k") {
-        event.preventDefault();
-        inputRef.current?.focus();
-      }
-    };
-
-    document.addEventListener("keydown", handleKeyDown);
-
-    return () => {
-      document.removeEventListener("keydown", handleKeyDown);
-    };
-  }, []);
 
   return (
     <header className="sticky top-0 z-99999 flex w-full border-gray-200 bg-white xl:border-b dark:border-gray-800 dark:bg-gray-900">
@@ -115,7 +100,8 @@ const AppHeader: React.FC = () => {
           </button>
 
           <div className="hidden xl:block">
-            <form>
+            <GlobalClinicSearch />
+            <form className="hidden">
               <div className="relative">
                 <span className="pointer-events-none absolute inset-s-4 top-1/2 -translate-y-1/2">
                   <svg
@@ -135,7 +121,6 @@ const AppHeader: React.FC = () => {
                   </svg>
                 </span>
                 <input
-                  ref={inputRef}
                   type="text"
                   placeholder={t("searchPlaceholder")}
                   className="dark:bg-dark-900 h-11 w-full rounded-lg border border-gray-200 bg-transparent py-2.5 ps-12 pe-14 text-sm text-gray-800 shadow-theme-xs placeholder:text-gray-400 focus:border-brand-300 focus:ring-3 focus:ring-brand-500/10 focus:outline-hidden xl:w-107.5 dark:border-gray-800 dark:bg-white/3 dark:text-white/90 dark:placeholder:text-white/30 dark:focus:border-brand-800"

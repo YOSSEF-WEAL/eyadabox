@@ -103,6 +103,14 @@ export default function PatientDetails() {
 
   const dateFormatter = new Intl.DateTimeFormat(i18n.language === "ar" ? "ar-EG" : "en-GB", { dateStyle: "medium" });
   const dateTimeFormatter = new Intl.DateTimeFormat(i18n.language === "ar" ? "ar-EG" : "en-GB", { dateStyle: "medium", timeStyle: "short" });
+  const historySummary = useMemo(() => {
+    const currentTime = Date.now();
+    return {
+      total: appointments.length,
+      completed: appointments.filter((appointment) => appointment.status === "completed").length,
+      upcoming: appointments.filter((appointment) => appointment.status !== "cancelled" && new Date(appointment.startsAt).getTime() > currentTime).length,
+    };
+  }, [appointments]);
 
   return <>
     <PageMeta title={`${patient?.fullName ?? t("clinic.patients.profileTitle")} | Clinic Desk`} description={t("clinic.modules.patients.description")} />
@@ -127,7 +135,7 @@ export default function PatientDetails() {
           </dl>
           <div className="mt-7 rounded-xl border border-gray-200 p-4 dark:border-gray-800"><h2 className="text-theme-sm font-semibold text-gray-800 dark:text-white/90">{t("clinic.patients.fields.notes")}</h2><p className="mt-2 whitespace-pre-line text-theme-sm text-gray-600 dark:text-gray-300">{patient.notes || t("clinic.patients.noNotes")}</p></div>
 
-          <div className="mt-8"><div className="flex items-center gap-2"><CalenderIcon className="size-5 text-brand-500" /><h2 className="text-theme-lg font-semibold text-gray-800 dark:text-white/90">{t("clinic.patients.appointmentHistory")}</h2></div>{appointments.length === 0 ? <p className="mt-4 rounded-xl border border-dashed border-gray-300 p-5 text-theme-sm text-gray-500 dark:border-gray-700 dark:text-gray-400">{t("clinic.patients.noAppointments")}</p> : <div className="mt-4 divide-y divide-gray-100 overflow-hidden rounded-xl border border-gray-200 dark:divide-gray-800 dark:border-gray-800">{appointments.map((appointment) => <div key={appointment.id} className="flex flex-col gap-3 p-4 sm:flex-row sm:items-center sm:justify-between"><div><p className="font-medium text-gray-800 dark:text-white/90">{dateTimeFormatter.format(new Date(appointment.startsAt))}</p><p className="mt-1 text-theme-sm text-gray-500 dark:text-gray-400">{practitionerNames.get(appointment.practitionerId) ?? "—"}{appointment.reason ? ` · ${appointment.reason}` : ""}</p></div><span className="w-fit rounded-full bg-brand-50 px-2.5 py-1 text-theme-xs font-medium text-brand-600 dark:bg-brand-500/15 dark:text-brand-400">{t(`clinic.appointments.statuses.${appointment.status}`)}</span></div>)}</div>}</div>
+          <div className="mt-8"><div className="flex items-center gap-2"><CalenderIcon className="size-5 text-brand-500" /><h2 className="text-theme-lg font-semibold text-gray-800 dark:text-white/90">{t("clinic.patients.appointmentHistory")}</h2></div><div className="mt-4 grid gap-3 sm:grid-cols-3"><HistoryMetric label={t("clinic.patients.history.total")} value={historySummary.total} /><HistoryMetric label={t("clinic.patients.history.completed")} value={historySummary.completed} /><HistoryMetric label={t("clinic.patients.history.upcoming")} value={historySummary.upcoming} /></div>{appointments.length === 0 ? <p className="mt-4 rounded-xl border border-dashed border-gray-300 p-5 text-theme-sm text-gray-500 dark:border-gray-700 dark:text-gray-400">{t("clinic.patients.noAppointments")}</p> : <div className="mt-4 divide-y divide-gray-100 overflow-hidden rounded-xl border border-gray-200 dark:divide-gray-800 dark:border-gray-800">{appointments.map((appointment) => <div key={appointment.id} className="flex flex-col gap-3 p-4 sm:flex-row sm:items-center sm:justify-between"><div><p className="font-medium text-gray-800 dark:text-white/90">{dateTimeFormatter.format(new Date(appointment.startsAt))}</p><p className="mt-1 text-theme-sm text-gray-500 dark:text-gray-400">{practitionerNames.get(appointment.practitionerId) ?? "—"}{appointment.reason ? ` · ${appointment.reason}` : ""}</p>{appointment.notes && <p className="mt-2 whitespace-pre-line text-theme-sm text-gray-600 dark:text-gray-300">{appointment.notes}</p>}</div><span className="w-fit rounded-full bg-brand-50 px-2.5 py-1 text-theme-xs font-medium text-brand-600 dark:bg-brand-500/15 dark:text-brand-400">{t(`clinic.appointments.statuses.${appointment.status}`)}</span></div>)}</div>}</div>
 
           {!patient.archivedAt && <div className="mt-8 border-t border-gray-100 pt-6 dark:border-gray-800"><button type="button" onClick={archiveModal.openModal} disabled={isArchiving} className="inline-flex items-center gap-2 rounded-lg px-3 py-2 text-theme-sm font-medium text-error-600 hover:bg-error-50 disabled:cursor-not-allowed disabled:opacity-50 dark:text-error-400 dark:hover:bg-error-500/15"><TrashBinIcon className="size-4" />{t(isArchiving ? "clinic.patients.archiving" : "clinic.patients.archive")}</button></div>}
         </div>
@@ -140,4 +148,8 @@ export default function PatientDetails() {
 
 function Detail({ label, value }: { label: string; value: string | null }) {
   return <div><dt className="text-theme-xs font-medium text-gray-500 dark:text-gray-400">{label}</dt><dd className="mt-1 text-theme-sm font-medium text-gray-800 dark:text-white/90">{value ?? "—"}</dd></div>;
+}
+
+function HistoryMetric({ label, value }: { label: string; value: number }) {
+  return <div className="rounded-xl border border-gray-200 p-4 dark:border-gray-800"><p className="text-theme-xs font-medium text-gray-500 dark:text-gray-400">{label}</p><p className="mt-1 text-title-sm font-semibold text-gray-800 dark:text-white/90">{value}</p></div>;
 }

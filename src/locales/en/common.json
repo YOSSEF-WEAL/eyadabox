@@ -92,6 +92,7 @@
       "newAppointment": "New appointment",
       "appointmentHistory": "Appointment history",
       "noAppointments": "No appointments have been recorded for this patient.",
+      "history": { "total": "Total appointments", "completed": "Completed visits", "upcoming": "Upcoming appointments" },
       "noNotes": "No notes recorded.",
       "createdAt": "Registered on",
       "archive": "Archive patient",
@@ -120,6 +121,7 @@
       "loadError": "Unable to load appointments. Please try again.",
       "saveError": "Unable to save the appointment. Please try again.",
       "archivedPatientError": "Archived patients cannot receive new appointments.",
+      "conflictError": "This practitioner already has an appointment at that time. Choose another time or practitioner.",
       "fields": { "patient": "Patient", "practitioner": "Practitioner", "startsAt": "Start time", "endsAt": "End time", "status": "Status", "reason": "Visit reason" },
       "columns": { "patient": "Patient", "practitioner": "Practitioner", "time": "Time", "status": "Status", "actions": "Actions" },
       "statuses": { "scheduled": "Scheduled", "confirmed": "Confirmed", "arrived": "Arrived", "completed": "Completed", "no_show": "No-show", "cancelled": "Cancelled" }
@@ -151,9 +153,12 @@
       "loadError": "Unable to load clinic settings. Please try again.",
       "saveError": "Unable to save clinic settings. Please try again.",
       "saved": "Clinic settings were saved.",
+      "tabs": { "label": "Settings sections", "clinic": "Clinic", "updates": "Updates", "backups": "Backups", "danger": "Danger Zone", "clinicDescription": "Manage the clinic details and sign-in duration used on this device." },
       "fields": { "name": "Clinic name", "phone": "Phone", "address": "Address", "duration": "Default appointment duration (minutes)", "sessionExpiryDays": "Keep me signed in for (days)" }
     },
     "updates": { "title": "App updates", "checking": "Checking for updates…", "current": "This device is running the latest version.", "available": "Version {version} is ready to install.", "check": "Check for updates", "install": "Download and restart", "downloading": "Downloading update…", "progress": "Downloading update: {progress}%", "error": "Unable to check for or install an update. Please try again." },
+    "backups": { "title": "Local data backup", "description": "Create a safe local copy of your clinic data before restoring an earlier copy.", "loading": "Loading local backups…", "creating": "Creating a safe backup…", "created": "A new backup was created successfully.", "available": "Available backups", "empty": "No backups available", "create": "Create backup", "restore": "Restore selected backup", "restoreConfirm": "Restore this backup? The current clinic data will first be saved as a safety backup, then the app will restart.", "restoring": "Restoring the selected backup and restarting…", "error": "Unable to manage local backups. Please try again." },
+    "danger": {"eyebrow":"Restricted administration","title":"Danger Zone","description":"These actions permanently change local clinic data. A safety backup is created before every destructive action.","notice":{"title":"Automatic safety backup","body":"Each action below first saves a timestamped safety backup on this device, so you can restore an earlier copy."},"risk":{"medium":"Careful","high":"High impact","critical":"Critical"},"tiers":{"high":{"title":"Remove clinic data","description":"Permanently deletes the selected records. Accounts, staff, and settings are kept."},"critical":{"title":"Irreversible resets","description":"Removes most clinic data or returns this device to first-run setup."}},"confirmTitle":"Confirm this action","confirmDescription":"To continue with {{action}}, type DELETE exactly.","confirmPlaceholder":"Type DELETE","confirmAction":"Permanently apply action","cancel":"Cancel","close":"Close","working":"Working…","runAction":"Run action","success":"Completed. Safety backup created: {{backup}}","error":"The action could not be completed. No further changes were made.","exportTitle":"Export before changes","exportDescription":"Create a CSV copy in the app-managed exports folder.","exportPatients":"Export patients","exportAppointments":"Export appointments","exporting":"Creating export…","exported":"Export created: {{file}}","backupTitle":"Manage backups","backupDescription":"Delete an app-managed backup only when it is no longer needed.","backupsError":"Backups could not be loaded.","selectBackup":"Select a backup to delete","noBackups":"No backups available","deleteBackup":"Delete backup","backupDeleted":"Backup was deleted.","actions":{"appointments":{"title":"Delete appointments","description":"Remove all appointments while keeping patients, practitioners, staff, and settings."},"patients":{"title":"Delete patients and appointments","description":"Remove patient records and every appointment, while keeping staff and settings."},"practitioners":{"title":"Delete practitioners and appointments","description":"Remove practitioners, working hours, and appointments while keeping patients and staff."},"operational":{"title":"Reset operational clinic data","description":"Remove patients, practitioners, working hours, and appointments while keeping accounts and clinic settings."},"factory_reset":{"title":"Factory reset this device","description":"Back up this database, restart the app, and begin again from first-admin setup."}}},
     "staff": {
       "title": "Clinic staff",
       "description": "Manage the local staff members who use this clinic workspace.",
@@ -314,6 +319,7 @@
   "header": {
     "searchPlaceholder": "Search or type command...",
     "toggleSidebar": "Toggle Sidebar",
+    "search": { "empty": "No matching patients or appointments.", "patients": "Patients", "appointments": "Appointments", "noReason": "No visit reason" },
     "notifications": {
       "title": "Notifications",
       "requestsPermission": "requests permission to change",

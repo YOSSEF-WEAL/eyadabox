@@ -15,9 +15,13 @@ struct SafeUser { id: String, display_name: String, username: String, role: Stri
 #[derive(Serialize)]
 #[serde(rename_all = "camelCase")]
 struct AuthStatus { requires_setup: bool, authenticated: bool, user: Option<SafeUser> }
+#[derive(Serialize)]
+#[serde(rename_all = "camelCase")]
+struct BackupInfo { name: String }
 struct AuthState(Mutex<Option<SafeUser>>);
 
 fn epoch() -> u64 { std::time::SystemTime::now().duration_since(std::time::UNIX_EPOCH).unwrap_or_default().as_secs() }
+fn timestamp_millis() -> u128 { std::time::SystemTime::now().duration_since(std::time::UNIX_EPOCH).unwrap_or_default().as_millis() }
 fn now() -> String { epoch().to_string() }
 fn normalize_username(value: &str) -> String { value.trim().to_lowercase() }
 fn valid_username(value: &str) -> bool { let n = value.len(); n >= 3 && n <= 50 && value.bytes().all(|c| c.is_ascii_alphanumeric() || matches!(c, b'.' | b'_' | b'-')) }
@@ -25,7 +29,9 @@ fn valid_password(value: &str) -> bool { (10..=200).contains(&value.chars().coun
 fn open_db(app: &AppHandle) -> Result<Connection, String> {
   let dir = app.path().app_data_dir().map_err(|_| "AUTH_UNAVAILABLE")?;
   std::fs::create_dir_all(&dir).map_err(|_| "AUTH_UNAVAILABLE")?;
-  Connection::open(dir.join("clinic-desk.db")).map_err(|_| "AUTH_UNAVAILABLE".to_owned())
+  let db = Connection::open(dir.join("clinic-desk.db")).map_err(|_| "AUTH_UNAVAILABLE".to_owned())?;
+  db.busy_timeout(std::time::Duration::from_secs(5)).map_err(|_| "AUTH_UNAVAILABLE")?;
+  Ok(db)
 }
 fn local_db_path(app: &AppHandle) -> Result<std::path::PathBuf, String> {
   let dir = app.path().app_data_dir().map_err(|_| "DATABASE_RECOVERY_UNAVAILABLE")?;
@@ -33,8 +39,11 @@ fn local_db_path(app: &AppHandle) -> Result<std::path::PathBuf, String> {
   Ok(dir.join("clinic-desk.db"))
 }
 fn required(db: &Connection) -> Result<bool, String> { db.query_row("SELECT NOT EXISTS(SELECT 1 FROM staff_users WHERE is_active = 1 AND length(trim(password_hash)) > 0)", [], |r| r.get(0)).map_err(|_| "AUTH_UNAVAILABLE".into()) }
+fn audit_event(db: &Connection, actor: Option<&str>, action: &str, entity_type: &str, entity_id: &str, details_json: Option<&str>) -> Result<(), String> {
+  db.execute("INSERT INTO audit_log (id, actor_staff_user_id, action, entity_type, entity_id, details_json, created_at) VALUES (lower(hex(randomblob(16))), ?1, ?2, ?3, ?4, ?5, ?6)", params![actor, action, entity_type, entity_id, details_json, now()]).map_err(|_| "AUTH_UNAVAILABLE")?; Ok(())
+}
 fn audit(db: &Connection, actor: Option<&str>, action: &str, entity: &str) -> Result<(), String> {
-  db.execute("INSERT INTO audit_log (id, actor_staff_user_id, action, entity_type, entity_id, details_json, created_at) VALUES (lower(hex(randomblob(16))), ?1, ?2, 'staff_user', ?3, NULL, ?4)", params![actor, action, entity, now()]).map_err(|_| "AUTH_UNAVAILABLE")?; Ok(())
+  audit_event(db, actor, action, "staff_user", entity, None)
 }
 fn lookup_active(db: &Connection, id: &str) -> Result<Option<SafeUser>, String> {
   db.query_row("SELECT id, display_name, username, role, avatar_data_url, profile_phone, profile_bio FROM staff_users WHERE id=?1 AND is_active=1 AND length(trim(password_hash))>0", [id], |r| Ok(SafeUser { id:r.get(0)?, display_name:r.get(1)?, username:r.get(2)?, role:r.get(3)?, avatar_data_url:r.get(4)?, profile_phone:r.get(5)?, profile_bio:r.get(6)? })).optional().map_err(|_| "AUTH_UNAVAILABLE".into())
@@ -127,6 +136,128 @@ fn reset_local_database(app: AppHandle) -> Result<String, String> {
   Ok(backup_name)
 }
 
+fn backup_directory(app: &AppHandle) -> Result<std::path::PathBuf, String> {
+  let database_path = local_db_path(app).map_err(|_| "BACKUP_UNAVAILABLE")?;
+  let directory = database_path.parent().ok_or("BACKUP_UNAVAILABLE")?.join("backups");
+  std::fs::create_dir_all(&directory).map_err(|_| "BACKUP_UNAVAILABLE")?;
+  Ok(directory)
+}
+fn is_backup_name(name: &str) -> bool {
+  std::path::Path::new(name).file_name().and_then(|value| value.to_str()) == Some(name)
+    && name.starts_with("clinic-desk-") && name.ends_with(".db")
+}
+fn move_current_database_to_backup(app: &AppHandle, name: &str) -> Result<(), String> {
+  let database_path = local_db_path(app).map_err(|_| "RESTORE_UNAVAILABLE")?;
+  let directory = backup_directory(app).map_err(|_| "RESTORE_UNAVAILABLE")?;
+  for suffix in ["", "-wal", "-shm"] {
+    let source = std::path::PathBuf::from(format!("{}{suffix}", database_path.display()));
+    if source.exists() {
+      std::fs::rename(&source, directory.join(format!("{name}{suffix}"))).map_err(|_| "RESTORE_UNAVAILABLE")?;
+    }
+  }
+  Ok(())
+}
+fn apply_pending_restore(app: &AppHandle) -> Result<(), String> {
+  let database_path = local_db_path(app).map_err(|_| "RESTORE_UNAVAILABLE")?;
+  let directory = database_path.parent().ok_or("RESTORE_UNAVAILABLE")?;
+  let pending = directory.join("restore-pending.db");
+  let marker = directory.join("restore-pending.flag");
+  let factory_reset = directory.join("factory-reset.flag");
+  if factory_reset.exists() { let before = format!("clinic-desk-before-factory-reset-{}.db", timestamp_millis()); move_current_database_to_backup(app, &before)?; let _ = std::fs::remove_file(&pending); let _ = std::fs::remove_file(&marker); std::fs::remove_file(factory_reset).map_err(|_| "RESTORE_UNAVAILABLE")?; return Ok(()); }
+  if !marker.exists() { return Ok(()); }
+  if !pending.exists() { std::fs::remove_file(marker).map_err(|_| "RESTORE_UNAVAILABLE")?; return Ok(()); }
+  move_current_database_to_backup(app, &format!("clinic-desk-before-restore-{}.db", timestamp_millis()))?;
+  std::fs::copy(&pending, &database_path).map_err(|_| "RESTORE_UNAVAILABLE")?;
+  std::fs::remove_file(&pending).map_err(|_| "RESTORE_UNAVAILABLE")?;
+  std::fs::remove_file(marker).map_err(|_| "RESTORE_UNAVAILABLE")?;
+  Ok(())
+}
+#[tauri::command]
+fn list_local_backups(app: AppHandle, state: State<AuthState>) -> Result<Vec<BackupInfo>, String> {
+  require_admin(&app, &state)?;
+  let directory = backup_directory(&app)?;
+  let mut backups = std::fs::read_dir(directory).map_err(|_| "BACKUP_UNAVAILABLE")?
+    .filter_map(Result::ok)
+    .filter_map(|entry| entry.file_name().into_string().ok())
+    .filter(|name| is_backup_name(name))
+    .map(|name| BackupInfo { name })
+    .collect::<Vec<_>>();
+  backups.sort_by(|a, b| b.name.cmp(&a.name));
+  Ok(backups)
+}
+#[tauri::command]
+fn create_local_backup(app: AppHandle, state: State<AuthState>) -> Result<BackupInfo, String> {
+  let user = require_admin(&app, &state)?;
+  let directory = backup_directory(&app)?;
+  let name = format!("clinic-desk-backup-{}.db", timestamp_millis());
+  let destination = directory.join(&name);
+  let db = open_db(&app).map_err(|_| "BACKUP_UNAVAILABLE")?;
+  db.execute("VACUUM INTO ?1", [destination.to_string_lossy().to_string()]).map_err(|_| "BACKUP_UNAVAILABLE")?;
+  audit_event(&db, Some(&user.id), "backup.create", "local_backup", &name, None)?;
+  Ok(BackupInfo { name })
+}
+#[tauri::command]
+fn schedule_local_restore(app: AppHandle, state: State<AuthState>, backup_name: String, confirmation: String) -> Result<(), String> {
+  if confirmation != "DELETE" { return Err("DANGER_ZONE_CONFIRMATION_REQUIRED".into()); }
+  let user = require_admin(&app, &state)?;
+  if !is_backup_name(&backup_name) { return Err("RESTORE_INVALID_BACKUP".into()); }
+  let source = backup_directory(&app)?.join(&backup_name);
+  if !source.is_file() { return Err("RESTORE_INVALID_BACKUP".into()); }
+  let database_path = local_db_path(&app).map_err(|_| "RESTORE_UNAVAILABLE")?;
+  let directory = database_path.parent().ok_or("RESTORE_UNAVAILABLE")?;
+  let pending = directory.join("restore-pending.db");
+  let marker = directory.join("restore-pending.flag");
+  std::fs::copy(source, pending).map_err(|_| "RESTORE_UNAVAILABLE")?;
+  std::fs::write(marker, &backup_name).map_err(|_| "RESTORE_UNAVAILABLE")?;
+  let db = open_db(&app).map_err(|_| "RESTORE_UNAVAILABLE")?;
+  audit_event(&db, Some(&user.id), "backup.restore", "local_backup", &backup_name, None)?;
+  drop(db);
+  app.restart()
+}
+fn require_admin(app: &AppHandle, state: &State<AuthState>) -> Result<SafeUser, String> {
+  let cached = state.0.lock().map_err(|_| "DANGER_ZONE_FORBIDDEN")?.clone();
+  let db = open_db(app).map_err(|_| "DANGER_ZONE_FORBIDDEN")?;
+  let user = match cached { Some(current) => lookup_active(&db, &current.id)?, None => saved_session(&db)? }.ok_or("DANGER_ZONE_FORBIDDEN")?;
+  if user.role != "admin" { return Err("DANGER_ZONE_FORBIDDEN".into()); }
+  *state.0.lock().map_err(|_| "DANGER_ZONE_FORBIDDEN")? = Some(user.clone());
+  Ok(user)
+}
+fn create_safety_backup(app: &AppHandle) -> Result<String, String> {
+  let name = format!("clinic-desk-safety-{}.db", timestamp_millis()); let destination = backup_directory(app).map_err(|_| "DANGER_ZONE_UNAVAILABLE")?.join(&name); let db = open_db(app).map_err(|_| "DANGER_ZONE_UNAVAILABLE")?;
+  db.execute("VACUUM INTO ?1", [destination.to_string_lossy().to_string()]).map_err(|_| "DANGER_ZONE_UNAVAILABLE")?; Ok(name)
+}
+#[tauri::command]
+fn danger_zone_action(app: AppHandle, state: State<AuthState>, action: String, confirmation: String) -> Result<String, String> {
+  if confirmation != "DELETE" { return Err("DANGER_ZONE_CONFIRMATION_REQUIRED".into()); }
+  if !matches!(action.as_str(), "appointments" | "patients" | "practitioners" | "operational" | "factory_reset") { return Err("DANGER_ZONE_INVALID_ACTION".into()); }
+  let user = require_admin(&app, &state)?; let backup = create_safety_backup(&app)?;
+  let details = serde_json::json!({ "backup": backup }).to_string();
+  if action == "factory_reset" { let db=open_db(&app).map_err(|_| "DANGER_ZONE_UNAVAILABLE")?; audit_event(&db,Some(&user.id),"danger.factory_reset","local_database","local_database",Some(&details))?; let dir=local_db_path(&app).map_err(|_| "DANGER_ZONE_UNAVAILABLE")?.parent().ok_or("DANGER_ZONE_UNAVAILABLE")?.to_path_buf(); std::fs::write(dir.join("factory-reset.flag"),"1").map_err(|_| "DANGER_ZONE_UNAVAILABLE")?; app.restart() }
+  let mut db = open_db(&app).map_err(|_| "DANGER_ZONE_UNAVAILABLE")?; let tx=db.transaction().map_err(|_| "DANGER_ZONE_UNAVAILABLE")?;
+  audit_event(&tx,Some(&user.id),&format!("danger.{action}"),"clinic_data","clinic_data",Some(&details))?;
+  match action.as_str() {
+    "appointments" => { tx.execute("DELETE FROM appointments", []).map_err(|_| "DANGER_ZONE_UNAVAILABLE")?; }
+    "patients" => { tx.execute("DELETE FROM appointments", []).map_err(|_| "DANGER_ZONE_UNAVAILABLE")?; tx.execute("DELETE FROM patients", []).map_err(|_| "DANGER_ZONE_UNAVAILABLE")?; }
+    "practitioners" => { tx.execute("DELETE FROM appointments", []).map_err(|_| "DANGER_ZONE_UNAVAILABLE")?; tx.execute("DELETE FROM working_hours", []).map_err(|_| "DANGER_ZONE_UNAVAILABLE")?; tx.execute("DELETE FROM practitioners", []).map_err(|_| "DANGER_ZONE_UNAVAILABLE")?; }
+    "operational" => { tx.execute("DELETE FROM appointments", []).map_err(|_| "DANGER_ZONE_UNAVAILABLE")?; tx.execute("DELETE FROM patients", []).map_err(|_| "DANGER_ZONE_UNAVAILABLE")?; tx.execute("DELETE FROM working_hours", []).map_err(|_| "DANGER_ZONE_UNAVAILABLE")?; tx.execute("DELETE FROM practitioners", []).map_err(|_| "DANGER_ZONE_UNAVAILABLE")?; }
+    _ => return Err("DANGER_ZONE_INVALID_ACTION".into()),
+  }
+  tx.commit().map_err(|_| "DANGER_ZONE_UNAVAILABLE")?; Ok(backup)
+}
+#[tauri::command]
+fn delete_local_backup(app: AppHandle, state: State<AuthState>, backup_name: String, confirmation: String) -> Result<(), String> {
+  if confirmation != "DELETE" { return Err("DANGER_ZONE_CONFIRMATION_REQUIRED".into()); } let user = require_admin(&app,&state)?; if !is_backup_name(&backup_name) { return Err("RESTORE_INVALID_BACKUP".into()); }
+  let path=backup_directory(&app)?.join(&backup_name); if !path.is_file() { return Err("RESTORE_INVALID_BACKUP".into()); }
+  let db=open_db(&app).map_err(|_| "DANGER_ZONE_UNAVAILABLE")?; audit_event(&db,Some(&user.id),"backup.delete","local_backup",&backup_name,None)?;
+  std::fs::remove_file(&path).map_err(|_| "DANGER_ZONE_UNAVAILABLE".to_owned())?; Ok(())
+}
+#[tauri::command]
+fn export_clinic_data(app: AppHandle, state: State<AuthState>, kind: String) -> Result<String, String> {
+  let user=require_admin(&app,&state)?; let dir=local_db_path(&app).map_err(|_| "DANGER_ZONE_UNAVAILABLE")?.parent().ok_or("DANGER_ZONE_UNAVAILABLE")?.join("exports"); std::fs::create_dir_all(&dir).map_err(|_| "DANGER_ZONE_UNAVAILABLE")?; let db=open_db(&app).map_err(|_| "DANGER_ZONE_UNAVAILABLE")?;
+  let (file, sql, header)=match kind.as_str() { "patients"=>(format!("clinic-desk-patients-{}.csv",timestamp_millis()),"SELECT id, full_name, COALESCE(phone,''), COALESCE(date_of_birth,'') FROM patients ORDER BY full_name","id,full_name,phone,date_of_birth\n"), "appointments"=>(format!("clinic-desk-appointments-{}.csv",timestamp_millis()),"SELECT id, patient_id, practitioner_id, starts_at, ends_at, status, COALESCE(reason,'') FROM appointments ORDER BY starts_at DESC","id,patient_id,practitioner_id,starts_at,ends_at,status,reason\n"), _=>return Err("DANGER_ZONE_INVALID_ACTION".into()) };
+  let mut csv=header.to_owned(); let mut statement=db.prepare(sql).map_err(|_| "DANGER_ZONE_UNAVAILABLE")?; let count=if kind=="patients" {4} else {7}; let rows=statement.query_map([],move |row| { let mut values=Vec::new(); for index in 0..count { values.push(row.get::<_,String>(index)?); } Ok(values) }).map_err(|_| "DANGER_ZONE_UNAVAILABLE")?; for row in rows { let values=row.map_err(|_| "DANGER_ZONE_UNAVAILABLE")?; csv.push_str(&values.into_iter().map(|value| format!("\"{}\"",value.replace('"',"\"\""))).collect::<Vec<_>>().join(",")); csv.push('\n'); } std::fs::write(dir.join(&file),csv).map_err(|_| "DANGER_ZONE_UNAVAILABLE")?; audit_event(&db,Some(&user.id),"data.export","clinic_data",&kind,None)?; Ok(file)
+}
+
 #[cfg_attr(mobile, tauri::mobile_entry_point)]
 pub fn run() {
   let migrations = vec![
@@ -135,5 +266,5 @@ pub fn run() {
     tauri_plugin_sql::Migration { version: 3, description: "add_staff_profile_fields", sql: include_str!("../migrations/0003_staff_profile.sql"), kind: tauri_plugin_sql::MigrationKind::Up },
     tauri_plugin_sql::Migration { version: 4, description: "add_local_sessions", sql: include_str!("../migrations/0004_sessions_and_settings.sql"), kind: tauri_plugin_sql::MigrationKind::Up },
   ];
-  tauri::Builder::default().manage(AuthState(Mutex::new(None))).invoke_handler(tauri::generate_handler![auth_status, bootstrap_first_admin, sign_in, sign_out, current_user, update_profile, change_password, reset_local_database]).plugin(tauri_plugin_sql::Builder::default().add_migrations("sqlite:clinic-desk.db", migrations).build()).plugin(tauri_plugin_updater::Builder::new().build()).setup(|app| { if cfg!(debug_assertions) { app.handle().plugin(tauri_plugin_log::Builder::default().level(log::LevelFilter::Info).build())?; } Ok(()) }).run(tauri::generate_context!()).expect("error while building tauri application");
+  tauri::Builder::default().manage(AuthState(Mutex::new(None))).invoke_handler(tauri::generate_handler![auth_status, bootstrap_first_admin, sign_in, sign_out, current_user, update_profile, change_password, reset_local_database, list_local_backups, create_local_backup, schedule_local_restore, danger_zone_action, delete_local_backup, export_clinic_data]).plugin(tauri_plugin_sql::Builder::default().add_migrations("sqlite:clinic-desk.db", migrations).build()).plugin(tauri_plugin_updater::Builder::new().build()).setup(|app| { apply_pending_restore(app.handle()).map_err(std::io::Error::other)?; if cfg!(debug_assertions) { app.handle().plugin(tauri_plugin_log::Builder::default().level(log::LevelFilter::Info).build())?; } Ok(()) }).run(tauri::generate_context!()).expect("error while building tauri application");
 }

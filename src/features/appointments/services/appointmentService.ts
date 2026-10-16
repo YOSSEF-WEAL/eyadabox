@@ -18,6 +18,7 @@ export class AppointmentService {
     this.patientLookup = patientLookup;
   }
   list(): Promise<Appointment[]> { return this.repository.list(); }
+  search(query: string): Promise<Appointment[]> { return this.repository.search(query); }
   listByPatient(patientId: string): Promise<Appointment[]> { return this.repository.listByPatient(patientId); }
   async create(input: SaveAppointmentInput): Promise<Appointment> {
     const validInput = validateAppointmentInput(input);

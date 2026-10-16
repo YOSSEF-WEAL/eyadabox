@@ -1,6 +1,6 @@
 [package]
 name = "clinic_desk"
-version = "0.1.3"
+version = "0.1.4"
 description = "Offline-first clinic management desktop application"
 authors = ["Eyadabox"]
 license = ""

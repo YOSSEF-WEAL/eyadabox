@@ -84,7 +84,8 @@ export default function Appointments() {
       await load();
       closeModal();
     } catch (saveError) {
-      setError(saveError instanceof Error && saveError.message === "PATIENT_ARCHIVED" ? t("clinic.appointments.archivedPatientError") : saveError instanceof Error ? saveError.message : t("clinic.appointments.saveError"));
+      const message = saveError instanceof Error ? saveError.message : "";
+      setError(message === "PATIENT_ARCHIVED" ? t("clinic.appointments.archivedPatientError") : message === "This practitioner already has an appointment in that time slot." ? t("clinic.appointments.conflictError") : message || t("clinic.appointments.saveError"));
     } finally {
       setIsSaving(false);
     }

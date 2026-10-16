@@ -14,7 +14,7 @@ The initial UI languages are English and Arabic. The selected interface language
 2. Clinic profile, practitioners, and local staff access
 3. Patient directory and patient profile
 4. Appointment calendar and daily schedule
-5. Settings, local backup, and restore
+5. Settings, app updates, local backup, restore, and admin-only Danger Zone controls
 
 ## Task order
 

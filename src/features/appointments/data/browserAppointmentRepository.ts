@@ -23,6 +23,11 @@ function overlaps(appointment: Appointment, input: SaveAppointmentInput, exclude
 export class BrowserAppointmentRepository implements AppointmentRepository {
   async list(): Promise<Appointment[]> { return readAppointments().sort((first, second) => first.startsAt.localeCompare(second.startsAt)); }
 
+  async search(query: string): Promise<Appointment[]> {
+    const value = query.trim().toLocaleLowerCase();
+    return readAppointments().filter((appointment) => !value || (appointment.reason ?? "").toLocaleLowerCase().includes(value)).sort((first, second) => second.startsAt.localeCompare(first.startsAt)).slice(0, 20);
+  }
+
   async listByPatient(patientId: string): Promise<Appointment[]> {
     return readAppointments()
       .filter((appointment) => appointment.patientId === patientId)

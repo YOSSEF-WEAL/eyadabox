@@ -48,6 +48,20 @@ export class SqliteAppointmentRepository implements AppointmentRepository {
     }
   }
 
+  async search(query: string): Promise<Appointment[]> {
+    const value = `%${query.trim()}%`;
+    try {
+      const database = await getDatabase();
+      const rows = await database.select<AppointmentRow[]>(
+        `SELECT a.${appointmentColumns.replaceAll(", ", ", a.")} FROM appointments a LEFT JOIN patients p ON p.id = a.patient_id WHERE a.reason LIKE $1 COLLATE NOCASE OR p.full_name LIKE $1 COLLATE NOCASE OR p.phone LIKE $1 COLLATE NOCASE ORDER BY a.starts_at DESC LIMIT 20`,
+        [value],
+      );
+      return rows.map(mapAppointment);
+    } catch (error) {
+      throw toDatabaseError(error, "Unable to search appointments.");
+    }
+  }
+
   async listByPatient(patientId: string): Promise<Appointment[]> {
     try {
       const database = await getDatabase();
